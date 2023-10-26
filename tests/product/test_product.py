@@ -43,4 +43,7 @@ class TestProduct:
 
         with step("Checking response API"):
             assert_that(data.status_code, is_(404))
-            assert_that(data.json()["message"][0], is_(f"The product with productId = {non_exist_id} is not found."))
+            assert_that(
+                data.json()["message"][0],
+                is_(f"The product with productId = {non_exist_id} is not found."),
+            )
