@@ -1,4 +1,4 @@
-from hamcrest import assert_that
+from hamcrest import assert_that, is_
 
 
 def check_mapping_api_to_db(api_request: dict, database_data: dict) -> None:
@@ -17,6 +17,6 @@ def check_mapping_api_to_db(api_request: dict, database_data: dict) -> None:
     for key_api, key_db in fields_api_to_db.items():
         assert_that(
             api_request[key_api],
-            database_data[key_db],
+            is_(database_data[key_db]),
             reason=f'"{key_db}" not equal expected',
         )
