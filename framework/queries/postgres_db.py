@@ -25,7 +25,9 @@ class PostgresDB:
         """Closing the connection"""
         self.db.close()
 
-    def get_data_by_filter(self, table: str, field: str, value: str) -> Optional[List[dict]]:
+    def get_data_by_filter(
+        self, table: str, field: str, value: str
+    ) -> Optional[List[dict]]:
         """Getting data from table by filter field and its value
 
         Args:
