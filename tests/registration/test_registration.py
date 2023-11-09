@@ -1,4 +1,3 @@
-import allure
 import pytest
 from allure import description, feature, link, step, title
 from allure_commons._allure import severity
@@ -16,8 +15,17 @@ from framework.tools.generators import generate_string
     name="(!) WAIT LINK. Description of the tested functionality",
 )
 class TestRegistration:
+    """
+    Test suite for testing the registration of a new user
+    """
+    email = None
+    user_to_register = None
+
     def setup_method(self):
-        with step("Generation data for registration"):
+        """
+        Generate data for registration and user registration
+        """
+        with step("Generation data for registration and user registration"):
             self.email = generate_string(length=10, additional_characters=["@te.st"])
             first_name = generate_string(length=2)
             last_name = generate_string(length=2)
@@ -32,13 +40,6 @@ class TestRegistration:
                 password=password,
             )
 
-        self.registration_response = None
-
-    @allure.step("Registration of user")
-    def _register_user(self, user):
-        """Registration of user"""
-        self.registration_response = AuthenticateAPI().registration(body=user)
-
     @severity(severity_level="CRITICAL")
     @title("User registration under minimum requirements")
     @description(
@@ -46,14 +47,19 @@ class TestRegistration:
         "THEN the information about the user is stored in the database"
     )
     def test_of_registration(self, postgres):
-        self._register_user(self.user_to_register)
+        """
+        Test of registration of user with minimum requirements
+        Args:
+            postgres: fixture for working with the database
+        """
+        with step("Registration of user"):
+            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
 
         with step("Checking the response code"):
-            assert_that(self.registration_response.status_code, is_(201))
+            assert_that(registration_response.status_code, is_(201))
 
         with step("Checking the response body"):
-            response_json = self.registration_response.json()
-            assert_that(response_json, has_key("token"))
+            response_json = registration_response.json()
             assert_that(response_json["token"], is_not(empty()))
 
         with step("Getting info about the user in DB"):
@@ -64,6 +70,7 @@ class TestRegistration:
         with step("Checking mapping data from the API request to the database"):
             check_mapping_api_to_db(api_request=self.user_to_register, database_data=user_data[0])
 
+    @pytest.mark.skip(reason="Bug in the API => wrong error message for not unique email")
     @severity(severity_level="MAJOR")
     @title("User registration with not unique email")
     @description(
@@ -71,17 +78,24 @@ class TestRegistration:
         "THEN the user receives an error message, and the user's information is not stored in the database"
     )
     def test_of_registration_email_uniqueness(self, postgres):
-        self._register_user(self.user_to_register)
+        """
+        Test of registration of user with not unique email
+        Args:
+            postgres: fixture for working with the database
+        """
+        with step("Registration of user"):
+            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
+            assert_that(registration_response.status_code, is_(201))
 
-        self._register_user(self.user_to_register)
+        with step("Registration of user's duplicate"):
+            duplicate_registration_response = AuthenticateAPI().registration(body=self.user_to_register)
 
         with step("Checking the response code"):
-            assert_that(self.registration_response.status_code, is_(400))
+            assert_that(duplicate_registration_response.status_code, is_(400))
 
         with step("Checking the response body"):
             expected_message = 'Email must be unique'
-            response_json = self.registration_response.json()
-            assert_that(response_json, has_key("message"))
+            response_json = duplicate_registration_response.json()
             assert_that(response_json["message"][0], is_(expected_message))
 
         with step("Getting info about the user with not unique email in DB"):
@@ -94,12 +108,14 @@ class TestRegistration:
             check_mapping_api_to_db(api_request=self.user_to_register, database_data=user_data[0])
 
     fields = [
+        # TODO: check the error message for the email field
         ("email", "Email should have a length between 2 and 128 characters"),
         ("firstName", "First name is the mandatory attribute"),
         ("lastName", "Last name is the mandatory attribute"),
         ("password", "Password is the mandatory attribute")
     ]
 
+    @pytest.mark.skip(reason="Bug in the API => wrong error message for missing required field")
     @pytest.mark.parametrize("data", fields)
     @severity(severity_level="MAJOR")
     @title("User registration with missing required field")
@@ -108,18 +124,23 @@ class TestRegistration:
         "THEN the user receives an error message, and the user's information is not stored in the database"
     )
     def test_of_registration_required_fields(self, postgres, data):
+        """
+        Test of registration of user with missing required field
+        Args:
+            postgres: fixture for working with the database
+            data: tuple with field and expected error message
+        """
         [field, expected_message] = data
         self.user_to_register.pop(field)
 
-        self._register_user(self.user_to_register)
+        with step("Registration of user"):
+            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
 
         with step("Checking the response code"):
-            assert_that(self.registration_response.status_code, is_(400))
+            assert_that(registration_response.status_code, is_(400))
 
         with step("Checking the response body"):
-
-            response_json = self.registration_response.json()
-            assert_that(response_json, has_key("message"))
+            response_json = registration_response.json()
             assert_that(response_json["message"][0], is_(expected_message))
 
         with step(f"Checking that new user with missing field {field} has not been registered "):

@@ -15,19 +15,13 @@ def check_mapping_api_to_db(api_request: dict, database_data: dict) -> None:
         "lastName": "last_name",
         "password": "password",
     }
+    # Hash the password
+    api_request["password"] = bcrypt.hashpw(api_request["password"].encode('utf-8'),
+                                            database_data["password"].encode('utf-8')).decode('utf-8')
 
     for key_api, key_db in fields_api_to_db.items():
-        if key_api == "password":
-            # Hash the password from the API request
-            hashed_password = bcrypt.hashpw(api_request[key_api].encode('utf-8'), database_data[key_db].encode('utf-8'))
-            assert_that(
-                hashed_password.decode('utf-8'),
-                is_(database_data[key_db]),
-                reason=f'"{key_db}" not equal expected',
-            )
-        else:
-            assert_that(
-                api_request[key_api],
-                is_(database_data[key_db]),
-                reason=f'"{key_db}" not equal expected',
-            )
+        assert_that(
+            api_request[key_api],
+            is_(database_data[key_db]),
+            reason=f'"{key_db}" not equal expected',
+        )
