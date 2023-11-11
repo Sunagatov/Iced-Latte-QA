@@ -37,10 +37,10 @@ class PostgresDB:
         """
         response = self.db.fetch_all(
             f"""
-            SELECT *
-            FROM {table}
-            WHERE {field} = '{value}';
-        """
+                SELECT *
+                FROM {table}
+                WHERE {field} = '{value}';
+            """
         )
 
         return response
@@ -53,12 +53,12 @@ class PostgresDB:
         """
         response = self.db.fetch_all(
             f"""
-            SELECT *
-            FROM product
-            WHERE active = true
-            ORDER BY RANDOM()
-            LIMIT {quantity};
-        """
+                SELECT *
+                FROM product
+                WHERE active = true
+                ORDER BY RANDOM()
+                LIMIT {quantity};
+            """
         )
         return response
 
@@ -83,3 +83,19 @@ class PostgresDB:
         if page >= 0:
             response += f" OFFSET {size * page}"
         return self.db.fetch_all(response)
+
+    def get_random_users(self, quantity: int = 1) -> List[dict]:
+        """Getting a random user
+
+        Args:
+            quantity: number of random users
+        """
+        response = self.db.fetch_all(
+            f"""
+                SELECT *
+                FROM user_details
+                ORDER BY RANDOM()
+                LIMIT {quantity};
+            """
+        )
+        return response
