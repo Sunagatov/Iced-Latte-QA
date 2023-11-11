@@ -44,5 +44,7 @@ class TestProduct:
 
         with step("Checking response API"):
             assert_status_code(data, 404)
-            expected_message = f"The product with productId = {non_exist_id} is not found."
+            expected_message = (
+                f"The product with productId = {non_exist_id} is not found."
+            )
             assert_response_message(data, expected_message)

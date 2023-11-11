@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 import requests
 from requests import Response
@@ -17,8 +18,8 @@ class AuthenticateAPI:
         """Endpoint for authentication of user
 
         Args:
-            email:    username
-            password: password for username
+            email:    user's email address;
+            password: password for email.
         """
         data = {
             "email": email,
