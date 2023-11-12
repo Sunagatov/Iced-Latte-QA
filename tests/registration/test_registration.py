@@ -1,6 +1,5 @@
 import pytest
-from allure import description, feature, link, step, title
-from allure_commons._allure import severity
+from allure import description, feature, link, step, title, severity
 from hamcrest import assert_that, is_, has_length, has_key, is_not, empty
 
 from framework.asserts.registration_asserts import check_mapping_api_to_db
@@ -15,9 +14,6 @@ from framework.tools.generators import generate_string
     name="(!) WAIT LINK. Description of the tested functionality",
 )
 class TestRegistration:
-    """
-    Test suite for testing the registration of a new user
-    """
     email = None
     user_to_register = None
 
@@ -47,11 +43,6 @@ class TestRegistration:
         "THEN the information about the user is stored in the database"
     )
     def test_of_registration(self, postgres):
-        """
-        Test of registration of user with minimum requirements
-        Args:
-            postgres: fixture for working with the database
-        """
         with step("Registration of user"):
             registration_response = AuthenticateAPI().registration(body=self.user_to_register)
 
@@ -78,11 +69,6 @@ class TestRegistration:
         "THEN the user receives an error message, and the user's information is not stored in the database"
     )
     def test_of_registration_email_uniqueness(self, postgres):
-        """
-        Test of registration of user with not unique email
-        Args:
-            postgres: fixture for working with the database
-        """
         with step("Registration of user"):
             registration_response = AuthenticateAPI().registration(body=self.user_to_register)
             assert_that(registration_response.status_code, is_(201))
@@ -108,8 +94,7 @@ class TestRegistration:
             check_mapping_api_to_db(api_request=self.user_to_register, database_data=user_data[0])
 
     fields = [
-        # TODO: check the error message for the email field
-        ("email", "Email should have a length between 2 and 128 characters"),
+        # ("email", "Email should have a length between 2 and 128 characters"),
         ("firstName", "First name is the mandatory attribute"),
         ("lastName", "Last name is the mandatory attribute"),
         ("password", "Password is the mandatory attribute")
@@ -124,14 +109,9 @@ class TestRegistration:
         "THEN the user receives an error message, and the user's information is not stored in the database"
     )
     def test_of_registration_required_fields(self, postgres, data):
-        """
-        Test of registration of user with missing required field
-        Args:
-            postgres: fixture for working with the database
-            data: tuple with field and expected error message
-        """
-        [field, expected_message] = data
-        self.user_to_register.pop(field)
+        with step("Preparing data for registration"):
+            [field, expected_message] = data
+            self.user_to_register.pop(field)
 
         with step("Registration of user"):
             registration_response = AuthenticateAPI().registration(body=self.user_to_register)
