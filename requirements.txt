@@ -3,3 +3,4 @@ psycopg2-binary==2.9.6
 PyHamcrest==2.0.4
 pytest==7.4.0
 requests==2.31.0
+bcrypt==4.0.1
