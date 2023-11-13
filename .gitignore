@@ -1,0 +1,15 @@
+.idea/
+__pycache__/
+allure_report/
+configs.py
+framework/asserts/__pycache__/
+framework/clients/__pycache__/
+framework/endpoints/__pycache__/
+framework/queries/__pycache__/
+framework/steps/__pycache__/
+framework/tools/__pycache__/
+tests/__pycache__/
+tests/authentication/__pycache__/
+tests/product/__pycache__/
+tests/registration/__pycache__/
+
