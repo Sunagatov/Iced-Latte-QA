@@ -1,6 +1,10 @@
 from typing import List, Optional
 
+import bcrypt
+
 from framework.clients.db_client import DBClient
+from framework.tools.generators import generate_string, generate_user
+import faker
 
 
 class PostgresDB:
@@ -99,3 +103,32 @@ class PostgresDB:
             """
         )
         return response
+
+    def insert_user(self, user: dict) -> None:
+        """Inserting user into database
+
+        Args:
+            user: user data
+        """
+        self.db.execute(
+            f"""
+                INSERT INTO public.user_details(
+                    id, first_name, last_name, stripe_customer_token, email, password, address_id, account_non_expired, account_non_locked, credentials_non_expired, enabled)
+                    VALUES ('{user["id"]}', '{user["first_name"]}', '{user["last_name"]}', null, '{user["email"]}', '{user["hashed_password"]}', null, true, true, true, true);
+            """
+        )
+
+    def create_random_users(self, quantity: int = 1) -> List[dict]:
+        """Creating random user(s)
+
+        Args:
+            quantity: number of random users
+        """
+        users = []
+
+        for _ in range(quantity):
+            user = generate_user()
+            self.insert_user(user)
+            users.append(user)
+
+        return users
