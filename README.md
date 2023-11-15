@@ -10,6 +10,7 @@ PORT_DB = '<port to database of service>'
 DB_NAME = '<name database>'
 DB_USER = '<username for connect to database>'
 DB_PASS = '<password for connect to database>'
+DEFAULT_PASSWORD = '<default password for test users>'
 ```
 
 ## Report

@@ -1,10 +1,7 @@
 from typing import List, Optional
 
-import bcrypt
-
 from framework.clients.db_client import DBClient
 from framework.tools.generators import generate_string, generate_user
-import faker
 
 
 class PostgresDB:
@@ -30,7 +27,7 @@ class PostgresDB:
         self.db.close()
 
     def get_data_by_filter(
-        self, table: str, field: str, value: str
+            self, table: str, field: str, value: str
     ) -> Optional[List[dict]]:
         """Getting data from table by filter field and its value
 
@@ -67,7 +64,7 @@ class PostgresDB:
         return response
 
     def get_product_by_filter(
-        self, field: str, ascend: bool = False, size: int = -1, page: int = -1
+            self, field: str, ascend: bool = False, size: int = -1, page: int = -1
     ) -> Optional[List[dict]]:
         """Getting sorted products by size and page by page
 
@@ -104,7 +101,7 @@ class PostgresDB:
         )
         return response
 
-    def insert_user(self, user: dict) -> None:
+    def create_user(self, user: dict) -> None:
         """Inserting user into database
 
         Args:
@@ -128,7 +125,12 @@ class PostgresDB:
 
         for _ in range(quantity):
             user = generate_user()
-            self.insert_user(user)
+            self.create_user(user)
             users.append(user)
 
         return users
+
+    def delete_user(self, user_id: str) -> None:
+        """Deletes a user from the database based on user ID"""
+        delete_query = f"DELETE FROM public.user_details WHERE id = '{user_id}';"
+        self.db.execute(delete_query)

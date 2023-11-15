@@ -2,6 +2,7 @@ import requests
 from requests import Response
 
 from configs import HOST
+from framework.tools.logging import log_request
 
 
 class UsersAPI:
@@ -20,5 +21,6 @@ class UsersAPI:
         headers["Authorization"] = f"Bearer {token}"
         url = self.url + "/{id}".format(id=user_id)
         response = requests.get(headers=headers, url=url)
+        log_request(response)
 
         return response
