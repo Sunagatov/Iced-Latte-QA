@@ -3,6 +3,7 @@ import uuid
 from allure import description, feature, link, step, title
 from hamcrest import assert_that, is_
 
+from framework.asserts.common import assert_status_code, assert_response_message
 from framework.asserts.product_asserts import check_mapping_db_to_api
 from framework.endpoints.product_api import ProductAPI
 
@@ -42,8 +43,7 @@ class TestProduct:
             data = ProductAPI().get_by_id(_id=non_exist_id)
 
         with step("Checking response API"):
-            assert_that(data.status_code, is_(404))
-            assert_that(
-                data.json()["message"][0],
-                is_(f"The product with productId = {non_exist_id} is not found."),
-            )
+            print(data.json())
+            assert_status_code(data, 404)
+            expected_message = f"The product with productId = {non_exist_id} is not found."
+            assert_response_message(data, expected_message)

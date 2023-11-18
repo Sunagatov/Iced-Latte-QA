@@ -10,7 +10,7 @@ class UsersAPI:
         self.url = HOST + "/api/v1/users"
         self.headers = {"Content-Type": "application/json"}
 
-    def get_user_by_id(self, user_id: str, token: str) -> Response:
+    def get_user_by_id(self, user_id: str = "", token: str = "") -> Response:
         """Getting info about user by id
 
         Args:

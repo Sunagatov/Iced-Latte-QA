@@ -24,12 +24,12 @@ def assert_all_user_data_matches(response_data, expected_user):
     for response_field, user_field in fields_to_compare.items():
         assert_that(response_data[response_field],
                     is_(expected_user[user_field]),
-                    reason=f'User {response_field} does not match')
+                    reason=f"Expected {response_field} should be {expected_user[user_field]}, found: {response_data[response_field]}")
 
     # Asserting specific fields that are not directly mapped
     assert_that(response_data["stripeCustomerToken"], is_(None),
-                reason='User stripe customer token should be None')
+                reason='Expected user stripe customer token should be None')
 
     # Asserting specific fields that are not directly mapped
     assert_that(response_data["address"], is_(None),
-                reason='User stripe customer token should be None')
+                reason='Expected user address should be None')

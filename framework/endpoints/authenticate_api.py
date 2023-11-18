@@ -39,7 +39,7 @@ class AuthenticateAPI:
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = self.url + "/logout"
-        response = requests.get(url=path, headers=headers)
+        response = requests.post(url=path, headers=headers)
         log_request(response)
 
         return response

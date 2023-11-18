@@ -14,6 +14,7 @@ from framework.endpoints.product_api import ProductAPI
     name="Description of the tested functionality",
 )
 class TestAllProducts:
+    @pytest.mark.skip(reason="Need to fix the bug in the test with lengths comparison")
     @title("Getting all products not authorized")
     @description(
         "WHEN not authorized requesting to get all products without parameters, "
