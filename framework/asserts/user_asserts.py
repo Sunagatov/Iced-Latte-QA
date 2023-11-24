@@ -1,7 +1,7 @@
 from hamcrest import assert_that, is_
 
 
-def assert_all_user_data_matches(response_data, expected_user):
+def assert_all_user_data_matches(response_data: dict, expected_user: dict) -> None:
     """Asserts that all relevant user data in the response matches the expected user data.
 
     Args:
