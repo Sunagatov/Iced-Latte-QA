@@ -27,7 +27,7 @@ class PostgresDB:
         self.db.close()
 
     def get_data_by_filter(
-        self, table: str, field: str, value: str
+            self, table: str, field: str, value: str
     ) -> Optional[List[dict]]:
         """Getting data from table by filter field and its value
 
@@ -64,7 +64,7 @@ class PostgresDB:
         return response
 
     def get_product_by_filter(
-        self, field: str, ascend: bool = False, size: int = -1, page: int = -1
+            self, field: str, ascend: bool = False, size: int = -1, page: int = -1
     ) -> Optional[List[dict]]:
         """Getting sorted products by size and page by page
 
@@ -105,7 +105,13 @@ class PostgresDB:
         """Inserting user into database
 
         Args:
-            user: user data
+            user: user data:
+                - id - user of id;
+                - first_name - first name of user;
+                - last_name - last name of user;
+                - email - email of user;
+                - password - password for user;
+                - hashed_password - hash of password for user.
         """
         self.db.execute(
             f"""
@@ -113,7 +119,8 @@ class PostgresDB:
                     , first_name
                     , last_name
                     , stripe_customer_token
-                    , email, password
+                    , email
+                    , password
                     , address_id
                     , account_non_expired
                     , account_non_locked
@@ -145,6 +152,10 @@ class PostgresDB:
         return users
 
     def delete_user(self, user_id: str) -> None:
-        """Deletes a user from the database based on user ID"""
+        """Deletes a user from the database based on user ID
+
+        Args:
+            user_id: user ID
+        """
         delete_query = f"DELETE FROM public.user_details WHERE id = '{user_id}';"
         self.db.execute(delete_query)

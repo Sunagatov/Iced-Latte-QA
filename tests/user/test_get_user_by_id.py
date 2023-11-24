@@ -11,10 +11,6 @@ from framework.tools.generators import generate_jwt_token
 
 
 @feature("Getting user info by ID")
-@link(
-    url="https://github.com/Sunagatov/Online-Store/wiki/",
-    name="(!) WAIT LINK. Description of the tested functionality",
-)
 class TestGetUserById:
     @title("Getting User's Own Information by ID")
     @description(
@@ -80,14 +76,18 @@ class TestGetUserById:
             expected_error_message = 'Internal server error'
             assert_response_message(getting_user_response, expected_error_message)
 
-    @title("Getting User Info by ID with Non-Existing User ID")
+    @pytest.mark.parametrize("user_id", ["00a000a0-aa0a-0000-00a0-0000a00a0aaa"
+        # commented(reason="NEED TO CLARIFY: Bug in the API => wrong status code (403 instead of 404)")
+        # , "1234567890"
+        # , " "
+    ])
+    @title("Getting User Info by ID with Invalid ID")
     @description(
         "GIVEN the user is logged in, "
-        "WHEN the user sends a request to get information about non-existing user by ID, "
+        "WHEN the user sends a request to get information about herself by invalid ID, "
         "THEN the response code is 404 and the response body contains an appropriate error message."
     )
-    def test_get_user_info_with_non_existing_user_id(self, create_authorized_user):
-        user_id = '00a000a0-aa0a-0000-00a0-0000a00a0aaa'
+    def test_get_user_info_with_invalid_id(self, create_authorized_user, user_id):
 
         with step("Getting user info by ID"):
             token = create_authorized_user["token"]
@@ -101,33 +101,6 @@ class TestGetUserById:
 
         with step("Checking the response body"):
             expected_error_message = f'User with id = {user_id} is not found.'
-            response = getting_user_response.json()
-            assert_response_message(getting_user_response, expected_error_message)
-            assert_that(response["httpStatusCode"], is_(404), reason='httpStatusCode should be 404')
-            assert_that(response["timestamp"], is_not(empty()), reason='timestamp should be present')
-
-    @pytest.mark.skip(reason="NEED TO CLARIFY: Bug in the API => wrong status code (403 instead of 404)")
-    @title("Getting User Info by ID with Invalid ID")
-    @description(
-        "GIVEN the user is logged in, "
-        "WHEN the user sends a request to get information about herself by invalid ID, "
-        "THEN the response code is 404 and the response body contains an appropriate error message."
-    )
-    def test_get_user_info_with_invalid_id(self, create_authorized_user):
-        invalid_id = '1234567890'
-
-        with step("Getting user info by ID"):
-            token = create_authorized_user["token"]
-            getting_user_response = UsersAPI().get_user_by_id(user_id=invalid_id, token=token)
-
-        with step("Checking the response code"):
-            assert_status_code(getting_user_response, 404)
-
-        with step("Checking the Content-Type"):
-            assert_content_type(getting_user_response, 'application/json')
-
-        with step("Checking the response body"):
-            expected_error_message = f'User with id = {invalid_id} is not found.'
             response = getting_user_response.json()
             assert_response_message(getting_user_response, expected_error_message)
             assert_that(response["httpStatusCode"], is_(404), reason='httpStatusCode should be 404')

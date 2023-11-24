@@ -29,6 +29,12 @@ def postgres() -> connect:
 
 
 def generate_and_insert_user(postgres):
+    """Generating and inserting a user into the database
+
+    Args:
+        postgres: connection to Postgres DataBase
+    """
+
     user = generate_user()
     postgres.create_user(user)
     return user
@@ -37,11 +43,17 @@ def generate_and_insert_user(postgres):
 @title("Creating a user (not authorized)")
 @fixture(scope="function")
 def create_user(postgres):
+    """Creating a user (not authorized)
+
+    Args:
+        postgres: connection to Postgres DataBase
+    """
+
     with step("Creating user via DB"):
         user_to_create = generate_and_insert_user(postgres)
 
     yield user_to_create
-    
+
     with step("Removing user from DB"):
         postgres.delete_user(user_to_create["id"])
 
@@ -49,6 +61,12 @@ def create_user(postgres):
 @title("Creating an authorized user")
 @fixture(scope="function")
 def create_authorized_user(postgres):
+    """Creating and authorizing a user
+
+    Args:
+        postgres: connection to Postgres DataBase
+    """
+
     with step("Creating user in DB"):
         user_to_create = generate_and_insert_user(postgres)
 

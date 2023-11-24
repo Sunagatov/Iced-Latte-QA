@@ -5,8 +5,8 @@ def assert_all_user_data_matches(response_data: dict, expected_user: dict) -> No
     """Asserts that all relevant user data in the response matches the expected user data.
 
     Args:
-        response_data (dict): The user data from the API response.
-        expected_user (dict): The expected user data.
+        response_data: The user data from the API response.
+        expected_user: The expected user data.
 
     Raises:
         AssertionError: If any of the assertions fail.

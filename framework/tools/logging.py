@@ -6,6 +6,8 @@ from allure_commons.types import AttachmentType
 
 
 def log_request(response):
+    """Logging request and response data to Allure report"""
+
     method, url = response.request.method, response.request.url
 
     with allure.step(f'{method} {url}'):
