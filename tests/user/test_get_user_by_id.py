@@ -7,7 +7,7 @@ from framework.asserts.user_asserts import assert_all_user_data_matches
 from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.endpoints.users_api import UsersAPI
 from framework.tools.generators import generate_user
-from framework.tools.jwt_token import generate_jwt_token
+from framework.tools.generators import generate_jwt_token
 
 
 @feature("Getting user info by ID")

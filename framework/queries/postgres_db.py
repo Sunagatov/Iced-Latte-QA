@@ -27,7 +27,7 @@ class PostgresDB:
         self.db.close()
 
     def get_data_by_filter(
-            self, table: str, field: str, value: str
+        self, table: str, field: str, value: str
     ) -> Optional[List[dict]]:
         """Getting data from table by filter field and its value
 
@@ -64,7 +64,7 @@ class PostgresDB:
         return response
 
     def get_product_by_filter(
-            self, field: str, ascend: bool = False, size: int = -1, page: int = -1
+        self, field: str, ascend: bool = False, size: int = -1, page: int = -1
     ) -> Optional[List[dict]]:
         """Getting sorted products by size and page by page
 
@@ -109,9 +109,28 @@ class PostgresDB:
         """
         self.db.execute(
             f"""
-                INSERT INTO public.user_details(
-                    id, first_name, last_name, stripe_customer_token, email, password, address_id, account_non_expired, account_non_locked, credentials_non_expired, enabled)
-                    VALUES ('{user["id"]}', '{user["first_name"]}', '{user["last_name"]}', null, '{user["email"]}', '{user["hashed_password"]}', null, true, true, true, true);
+                INSERT INTO public.user_details(id
+                    , first_name
+                    , last_name
+                    , stripe_customer_token
+                    , email, password
+                    , address_id
+                    , account_non_expired
+                    , account_non_locked
+                    , credentials_non_expired
+                    , enabled
+                )
+                VALUES ('{user["id"]}'
+                    , '{user["first_name"]}'
+                    , '{user["last_name"]}'
+                    , null, '{user["email"]}'
+                    , '{user["hashed_password"]}'
+                    , null
+                    , true
+                    , true
+                    , true
+                    , true
+                );
             """
         )
 
@@ -121,12 +140,7 @@ class PostgresDB:
         Args:
             quantity: number of random users
         """
-        users = []
-
-        for _ in range(quantity):
-            user = generate_user()
-            self.create_user(user)
-            users.append(user)
+        users = [self.create_user(generate_user()) for _ in range(quantity)]
 
         return users
 

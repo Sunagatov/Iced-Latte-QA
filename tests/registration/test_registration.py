@@ -99,7 +99,6 @@ class TestRegistration:
         ("password", "Password is the mandatory attribute")
     ]
 
-    # @pytest.mark.skip(reason="Bug in the API => wrong error message for missing required field")
     @pytest.mark.parametrize("data", fields)
     @severity(severity_level="MAJOR")
     @title("User registration with missing required field")

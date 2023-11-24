@@ -41,7 +41,9 @@ def create_user(postgres):
         user_to_create = generate_and_insert_user(postgres)
 
     yield user_to_create
-    postgres.delete_user(user_to_create["id"])
+    
+    with step("Removing user from DB"):
+        postgres.delete_user(user_to_create["id"])
 
 
 @title("Creating an authorized user")
