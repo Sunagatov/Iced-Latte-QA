@@ -11,7 +11,7 @@ class TestAuthentication:
     @title("Test authentication")
     @description(
         "GIVEN user is registered"
-        "WHEN user submit valid credential "
+        "WHEN user submit valid credential for authentication"
         "THEN status HTTP CODE = 200 and get JWT token"
     )
     def test_authentication(self, postgres):

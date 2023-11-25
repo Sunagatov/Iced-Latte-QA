@@ -23,7 +23,6 @@ class TestAuthentication:
             assert_that(response.status_code, is_(201), reason='Expected status code 201')
 
         with step("Authentication  user with incorrect password"):
-            "add to the password in the end str 'invalid' "
             data_post = {
                 "email": data["email"],
                 "password": data["password"] + 'invalid',
@@ -45,13 +44,10 @@ class TestAuthentication:
             assert_that(response.status_code, is_(201), reason='Expected status code 201')
 
         with step("Authentication  user with incorrect email"):
-            " add fake email  "
-
             data_post = {
                 "email": 'fake.fake@fake.com',
                 "password": data["password"],
-            }
-
+               }
             response = AuthenticateAPI().authentication(email=data_post["email"], password=data_post["password"])
             assert_that(response.status_code, is_(401), reason='Expected status code 401')
 
@@ -68,7 +64,6 @@ class TestAuthentication:
             assert_that(response.status_code, is_(201), reason='Expected status code 201')
 
         with step("Authentication  user with incorrect password and email"):
-            "add to the password in the end str 'invalid and email = fake email' "
             data_post = {
                 "email": 'fake.fake@fake.com',
                 "password": data["password"] + 'invalid',

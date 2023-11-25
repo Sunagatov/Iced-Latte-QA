@@ -22,10 +22,10 @@ def generate_string(length: int, additional_characters: list = None) -> str:
 
 
 def generate_password(length: int) -> str:
-    """
-     Function generates and returns random generated password.
-     Args:
-         length (int): length of password
+    """Function generates and returns random generated password.
+
+    Args:
+         length: length of password
     """
     letters = string.ascii_letters
     digits = string.digits
@@ -45,9 +45,9 @@ def generate_password(length: int) -> str:
     return password
 
 
-def generate_user_data(password_len: int = None, length_first_name: int = None, length_last_name: int = None) -> dict:
-    """
-    Function for generation random user data
+def generate_user_data(password_len: int, length_first_name: int, length_last_name: int) -> dict:
+    """Function for generation random user data
+
     Args:
         password_len: length generated password
         length_first_name: length generated string
