@@ -22,3 +22,9 @@ To get the Allure report on the local computer, follow these steps in root direc
 python -m pytest ./tests --alluredir=allure_report --clean-alluredir
 allure serve allure_report
 ```
+
+## Pre-commit hooks
+For running pre-commit hooks should be installed pre-commit -> https://pre-commit.com/#install
+```bash
+pre-commit install
+```
