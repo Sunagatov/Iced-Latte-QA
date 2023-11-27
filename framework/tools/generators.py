@@ -31,33 +31,43 @@ def generate_password(length: int) -> str:
     digits = string.digits
     special_chars = "!@%*$&"
     all_chars = digits + special_chars + letters
-    password = ''.join(random.choice(all_chars) for _ in range(length))
+    password = "".join(random.choice(all_chars) for _ in range(length))
 
     """Digits and letters is required char in password. This statement add 1 digits and letter to the password" \
        if it absent during generation random password """
     if all(char not in digits for char in password):
         random_index = random.randint(0, length - 1)
-        password = password[:random_index] + random.choice(digits) + password[random_index:]
+        password = (
+            password[:random_index] + random.choice(digits) + password[random_index:]
+        )
     if all(char not in letters for char in password):
         random_index = random.randint(0, length - 1)
-        password = password[:random_index] + random.choice(letters) + password[random_index:]
+        password = (
+            password[:random_index] + random.choice(letters) + password[random_index:]
+        )
 
     return password
 
 
-def generate_user_data(password_len: int, length_first_name: int, length_last_name: int) -> dict:
+def generate_user_data(
+    password_length: int, first_name_length: int, last_name_length: int
+) -> dict:
     """Function for generation random user data
 
     Args:
-        password_len: length generated password
-        length_first_name: length generated string
-        length_last_name:  length generated string
+        password_length: length generated password
+        first_name_length: length generated string
+        last_name_length:  length generated string
     """
-    first_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(length_first_name))
-    last_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(length_last_name))
+    first_name = "".join(
+        random.choice(string.ascii_lowercase) for _ in range(first_name_length)
+    )
+    last_name = "".join(
+        random.choice(string.ascii_lowercase) for _ in range(last_name_length)
+    )
     return {
         "firstName": first_name,
         "lastName": last_name,
-        "password": generate_password(password_len),
+        "password": generate_password(password_length),
         "email": fake.email(),
     }

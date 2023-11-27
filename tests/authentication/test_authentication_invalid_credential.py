@@ -16,57 +16,83 @@ class TestAuthentication:
     )
     def test_authentication_incorrect_password(self):
         with step("Generation data for registration"):
-            data = generate_user_data(length_first_name=5, length_last_name=5, password_len=8)
+            data = generate_user_data(
+                first_name_length=5, last_name_length=5, password_length=8
+            )
 
         with step("Registration new user"):
             response = AuthenticateAPI().registration(body=data)
-            assert_that(response.status_code, is_(201), reason='Expected status code 201')
+            assert_that(
+                response.status_code, is_(201), reason="Expected status code 201"
+            )
 
         with step("Authentication  user with incorrect password"):
             data_post = {
                 "email": data["email"],
-                "password": data["password"] + 'invalid',
+                "password": data["password"] + "invalid",
             }
 
-            response = AuthenticateAPI().authentication(email=data_post["email"], password=data_post["password"])
-            assert_that(response.status_code, is_(401), reason='Expected status code 401')
+            response = AuthenticateAPI().authentication(
+                email=data_post["email"], password=data_post["password"]
+            )
+            assert_that(
+                response.status_code, is_(401), reason="Expected status code 401"
+            )
 
-    @pytest.mark.skip(reason="Bug in the API => wrong authentication response status code. "
-                             "Expected status code = 401"
-                             "Actual status code = 403"
-                      )
+    @pytest.mark.skip(
+        reason="Bug in the API => wrong authentication response status code. "
+        "Expected status code = 401"
+        "Actual status code = 403"
+    )
     def test_authentication_incorrect_email(self):
         with step("Generation data for registration"):
-            data = generate_user_data(length_first_name=5, length_last_name=5, password_len=8)
+            data = generate_user_data(
+                first_name_length=5, last_name_length=5, password_length=8
+            )
 
         with step("Registration new user"):
             response = AuthenticateAPI().registration(body=data)
-            assert_that(response.status_code, is_(201), reason='Expected status code 201')
+            assert_that(
+                response.status_code, is_(201), reason="Expected status code 201"
+            )
 
         with step("Authentication  user with incorrect email"):
             data_post = {
-                "email": 'fake.fake@fake.com',
+                "email": "fake.fake@fake.com",
                 "password": data["password"],
-               }
-            response = AuthenticateAPI().authentication(email=data_post["email"], password=data_post["password"])
-            assert_that(response.status_code, is_(401), reason='Expected status code 401')
+            }
+            response = AuthenticateAPI().authentication(
+                email=data_post["email"], password=data_post["password"]
+            )
+            assert_that(
+                response.status_code, is_(401), reason="Expected status code 401"
+            )
 
-    @pytest.mark.skip(reason="Bug in the API => wrong authentication response status code. "
-                             "Expected status code = 401"
-                             "Actual status code = 403"
-                      )
+    @pytest.mark.skip(
+        reason="Bug in the API => wrong authentication response status code. "
+        "Expected status code = 401"
+        "Actual status code = 403"
+    )
     def test_authentication_incorrect_password_email(self):
         with step("Generation data for registration"):
-            data = generate_user_data(length_last_name=5, length_first_name=5, password_len=8)
+            data = generate_user_data(
+                first_name_length=5, last_name_length=5, password_length=8
+            )
 
         with step("Registration new user"):
             response = AuthenticateAPI().registration(body=data)
-            assert_that(response.status_code, is_(201), reason='Expected status code 201')
+            assert_that(
+                response.status_code, is_(201), reason="Expected status code 201"
+            )
 
         with step("Authentication  user with incorrect password and email"):
             data_post = {
-                "email": 'fake.fake@fake.com',
-                "password": data["password"] + 'invalid',
+                "email": "fake.fake@fake.com",
+                "password": data["password"] + "invalid",
             }
-            response = AuthenticateAPI().authentication(email=data_post["email"], password=data_post["password"])
-            assert_that(response.status_code, is_(401), reason='Expected status code 401')
+            response = AuthenticateAPI().authentication(
+                email=data_post["email"], password=data_post["password"]
+            )
+            assert_that(
+                response.status_code, is_(401), reason="Expected status code 401"
+            )

@@ -71,4 +71,3 @@ allure_report
 # Config
 configs.py
 tests/__pycache__/
-
