@@ -1,10 +1,16 @@
 from random import choice
 from string import ascii_lowercase
+import bcrypt
+import base64
+import jwt
+import datetime
+
+from configs import DEFAULT_PASSWORD, JWT_SECRET
 import random
 import string
 from faker import Faker
 
-fake = Faker()
+faker = Faker()
 
 
 def generate_string(length: int, additional_characters: list = None) -> str:
@@ -19,6 +25,48 @@ def generate_string(length: int, additional_characters: list = None) -> str:
         result += additional_characters
 
     return "".join(result)
+
+
+def generate_user(password: str = DEFAULT_PASSWORD) -> dict:
+    """Generating a user with the specified password
+
+    Args:
+        password: password for user
+    """
+
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    return {
+        "id": faker.uuid4(),
+        "email": faker.email(),
+        "first_name": faker.first_name(),
+        "last_name": faker.last_name(),
+        "password": password,
+        "hashed_password": hashed_password,
+    }
+
+
+def generate_jwt_token(email: str = "", expired: bool = False) -> str:
+    """Generating a JWT token
+
+    Args:
+        email: user email
+        expired: flag for expired token (True - expired, False - not expired)
+    """
+
+    payload = {
+        "sub": email,
+        "iat": datetime.datetime.utcnow(),
+    }
+    if expired:
+        payload["exp"] = datetime.datetime.utcnow() - datetime.timedelta(seconds=1)
+    else:
+        payload["exp"] = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+
+    encoded_secret_key = JWT_SECRET
+    secret_key = base64.b64decode(encoded_secret_key)
+    token = jwt.encode(payload, secret_key, algorithm="HS256", headers={"alg": "HS256"})
+
+    return token
 
 
 def generate_password(length: int) -> str:
@@ -69,5 +117,5 @@ def generate_user_data(
         "firstName": first_name,
         "lastName": last_name,
         "password": generate_password(password_length),
-        "email": fake.email(),
+        "email": faker.email(),
     }

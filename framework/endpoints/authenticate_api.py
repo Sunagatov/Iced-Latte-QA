@@ -4,6 +4,7 @@ import requests
 from requests import Response
 
 from configs import HOST
+from framework.tools.logging import log_request
 
 
 class AuthenticateAPI:
@@ -25,6 +26,7 @@ class AuthenticateAPI:
         }
         path = self.url + "/authenticate"
         response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
+        log_request(response)
 
         return response
 
@@ -37,7 +39,8 @@ class AuthenticateAPI:
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = self.url + "/logout"
-        response = requests.get(url=path, headers=headers)
+        response = requests.post(url=path, headers=headers)
+        log_request(response)
 
         return response
 
@@ -53,5 +56,6 @@ class AuthenticateAPI:
         """
         path = self.url + "/register"
         response = requests.post(url=path, data=json.dumps(body), headers=self.headers)
+        log_request(response)
 
         return response

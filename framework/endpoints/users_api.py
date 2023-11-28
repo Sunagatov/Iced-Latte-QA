@@ -2,6 +2,7 @@ import requests
 from requests import Response
 
 from configs import HOST
+from framework.tools.logging import log_request
 
 
 class UsersAPI:
@@ -9,7 +10,7 @@ class UsersAPI:
         self.url = HOST + "/api/v1/users"
         self.headers = {"Content-Type": "application/json"}
 
-    def get_user_by_id(self, user_id: str, token: str) -> Response:
+    def get_user_by_id(self, user_id: str = "", token: str = "") -> Response:
         """Getting info about user by id
 
         Args:
@@ -20,5 +21,6 @@ class UsersAPI:
         headers["Authorization"] = f"Bearer {token}"
         url = self.url + "/{id}".format(id=user_id)
         response = requests.get(headers=headers, url=url)
+        log_request(response)
 
         return response

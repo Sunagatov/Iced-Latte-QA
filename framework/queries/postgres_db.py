@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from framework.clients.db_client import DBClient
+from framework.tools.generators import generate_string, generate_user
 
 
 class PostgresDB:
@@ -99,3 +100,62 @@ class PostgresDB:
             """
         )
         return response
+
+    def create_user(self, user: dict) -> None:
+        """Inserting user into database
+
+        Args:
+            user: user data:
+                - id - user of id;
+                - first_name - first name of user;
+                - last_name - last name of user;
+                - email - email of user;
+                - password - password for user;
+                - hashed_password - hash of password for user.
+        """
+        self.db.execute(
+            f"""
+                INSERT INTO public.user_details(id
+                    , first_name
+                    , last_name
+                    , stripe_customer_token
+                    , email
+                    , password
+                    , address_id
+                    , account_non_expired
+                    , account_non_locked
+                    , credentials_non_expired
+                    , enabled
+                )
+                VALUES ('{user["id"]}'
+                    , '{user["first_name"]}'
+                    , '{user["last_name"]}'
+                    , null, '{user["email"]}'
+                    , '{user["hashed_password"]}'
+                    , null
+                    , true
+                    , true
+                    , true
+                    , true
+                );
+            """
+        )
+
+    def create_random_users(self, quantity: int = 1) -> List[dict]:
+        """Creating random user(s)
+
+        Args:
+            quantity: number of random users
+        """
+        users = [self.create_user(generate_user()) for _ in range(quantity)]
+
+        return users
+
+    def delete_user(self, user_id: str) -> None:
+        """Deletes a user from the database based on user ID
+
+        Args:
+            user_id: user ID
+        """
+        delete_query = f"DELETE FROM public.user_details WHERE id = '{user_id}';"
+        self.db.execute(delete_query)

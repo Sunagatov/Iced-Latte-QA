@@ -10,6 +10,8 @@ PORT_DB = '<port to database of service>'
 DB_NAME = '<name database>'
 DB_USER = '<username for connect to database>'
 DB_PASS = '<password for connect to database>'
+DEFAULT_PASSWORD = '<default password for test users>'
+JWT_SECRET = '<default secret for JWT>'
 ```
 
 ## Report
@@ -19,4 +21,10 @@ To get the Allure report on the local computer, follow these steps in root direc
 ```bash
 python -m pytest ./tests --alluredir=allure_report --clean-alluredir
 allure serve allure_report
+```
+
+## Pre-commit hooks
+For running pre-commit hooks should be installed pre-commit -> https://pre-commit.com/#install
+```bash
+pre-commit install
 ```
