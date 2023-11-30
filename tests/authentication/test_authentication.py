@@ -52,12 +52,11 @@ class TestAuthentication:
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=email
             )
-            id_user = user_data[0]["id"]
 
         with step(
             "Validation token by retrieving user information via API request by user's ID "
         ):
-            response = UsersAPI().get_user_by_id(user_id=id_user, token=token)
+            response = UsersAPI().get_user_by_id(token=token)
             assert_that(
                 response.status_code, is_(200), reason="Expected status code 200"
             )

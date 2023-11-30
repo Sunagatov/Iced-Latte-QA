@@ -16,8 +16,10 @@ def check_mapping_api_to_db(api_request: dict, database_data: dict) -> None:
         "password": "password",
     }
     # Hash the password
-    api_request["password"] = bcrypt.hashpw(api_request["password"].encode('utf-8'),
-                                            database_data["password"].encode('utf-8')).decode('utf-8')
+    api_request["password"] = bcrypt.hashpw(
+        api_request["password"].encode("utf-8"),
+        database_data["password"].encode("utf-8"),
+    ).decode("utf-8")
 
     for key_api, key_db in fields_api_to_db.items():
         assert_that(

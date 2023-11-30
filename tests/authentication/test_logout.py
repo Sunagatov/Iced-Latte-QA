@@ -20,13 +20,21 @@ class TestLogout:
 
         with step("Log out of user"):
             logging_out_response = AuthenticateAPI().logout(token=token)
-            assert_that(logging_out_response.status_code, is_(200), reason='Failed request "logout"')
+            assert_that(
+                logging_out_response.status_code,
+                is_(200),
+                reason='Failed request "logout"',
+            )
 
         with step("Re-getting data user by ID via API"):
-            getting_user_response = UsersAPI().get_user_by_id(token=token, user_id=user["id"])
+            getting_user_response = UsersAPI().get_user_by_id(token=token)
 
         with step("Checking the response from the API"):
-            assert_that(getting_user_response.status_code, is_(401), reason="Log out not executed")
+            assert_that(
+                getting_user_response.status_code,
+                is_(401),
+                reason="Log out not executed",
+            )
             assert_that(
                 getting_user_response.json()["message"],
                 is_("JWT Token is blacklisted"),
