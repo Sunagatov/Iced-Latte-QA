@@ -45,7 +45,9 @@ class TestRegistration:
     )
     def test_of_registration(self, postgres):
         with step("Registration of user"):
-            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
+            registration_response = AuthenticateAPI().registration(
+                body=self.user_to_register
+            )
 
         with step("Checking the response code"):
             assert_status_code(registration_response, 201)
@@ -60,7 +62,9 @@ class TestRegistration:
             )
 
         with step("Checking mapping data from the API request to the database"):
-            check_mapping_api_to_db(api_request=self.user_to_register, database_data=user_data[0])
+            check_mapping_api_to_db(
+                api_request=self.user_to_register, database_data=user_data[0]
+            )
 
     @severity(severity_level="MAJOR")
     @title("User registration with not unique email")
@@ -70,33 +74,43 @@ class TestRegistration:
     )
     def test_of_registration_email_uniqueness(self, postgres):
         with step("Registration of user"):
-            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
+            registration_response = AuthenticateAPI().registration(
+                body=self.user_to_register
+            )
             assert_that(registration_response.status_code, is_(201))
 
         with step("Registration of user's duplicate"):
-            duplicate_registration_response = AuthenticateAPI().registration(body=self.user_to_register)
+            duplicate_registration_response = AuthenticateAPI().registration(
+                body=self.user_to_register
+            )
 
         with step("Checking the response code"):
             assert_status_code(duplicate_registration_response, 400)
 
         with step("Checking the response body"):
-            expected_message = 'Email must be unique'
-            assert_message_in_response(duplicate_registration_response, expected_message)
+            expected_message = "Email must be unique"
+            assert_message_in_response(
+                duplicate_registration_response, expected_message
+            )
 
         with step("Getting info about the user with not unique email in DB"):
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=self.email
             )
 
-        with step("Checking that new user with duplicate email has not been registered "):
+        with step(
+            "Checking that new user with duplicate email has not been registered "
+        ):
             assert_that(user_data, has_length(1))
-            check_mapping_api_to_db(api_request=self.user_to_register, database_data=user_data[0])
+            check_mapping_api_to_db(
+                api_request=self.user_to_register, database_data=user_data[0]
+            )
 
     fields = [
         # ("email", "Email is the mandatory attribute"), # Bug in the API => wrong error message for missing required field
         ("firstName", "First name is the mandatory attribute"),
         ("lastName", "Last name is the mandatory attribute"),
-        ("password", "Password is the mandatory attribute")
+        ("password", "Password is the mandatory attribute"),
     ]
 
     @pytest.mark.parametrize("data", fields)
@@ -112,7 +126,9 @@ class TestRegistration:
             self.user_to_register.pop(field)
 
         with step("Registration of user"):
-            registration_response = AuthenticateAPI().registration(body=self.user_to_register)
+            registration_response = AuthenticateAPI().registration(
+                body=self.user_to_register
+            )
 
         with step("Checking the response code"):
             assert_status_code(registration_response, 400)
@@ -120,7 +136,9 @@ class TestRegistration:
         with step("Checking the response body"):
             assert_message_in_response(registration_response, expected_message)
 
-        with step(f"Checking that new user with missing field {field} has not been registered "):
+        with step(
+            f"Checking that new user with missing field {field} has not been registered "
+        ):
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=self.email
             )

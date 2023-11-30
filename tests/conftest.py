@@ -72,8 +72,7 @@ def create_authorized_user(postgres):
 
     with step("Authentication of user and getting token"):
         authentication_response = AuthenticateAPI().authentication(
-            email=user_to_create['email'],
-            password=user_to_create['password']
+            email=user_to_create["email"], password=user_to_create["password"]
         )
         token = authentication_response.json()["token"]
 
