@@ -10,8 +10,8 @@ class UsersAPI:
         self.url = HOST + "/api/v1/users"
         self.headers = {"Content-Type": "application/json"}
 
-    def get_user_by_id(self, token: str = "") -> Response:
-        """Getting info about user by id
+    def get_user(self, token: str = "") -> Response:
+        """Getting info about user
 
         Args:
             token:      JWT token for authorization of request
