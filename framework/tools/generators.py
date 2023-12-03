@@ -35,14 +35,37 @@ def generate_user(password: str = DEFAULT_PASSWORD) -> dict:
     """
 
     hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    return {
+    user_data = {
         "id": faker.uuid4(),
+        "firstName": faker.first_name(),
+        "lastName": faker.last_name(),
         "email": faker.email(),
-        "first_name": faker.first_name(),
-        "last_name": faker.last_name(),
+        "birthDate": faker.date_of_birth().strftime("%Y-%m-%d"),
+        "phoneNumber": faker.phone_number(),
+        "stripeCustomerToken": faker.uuid4(),
         "password": password,
         "hashed_password": hashed_password,
     }
+
+    return user_data
+
+
+def generate_user_with_address(password: str = DEFAULT_PASSWORD) -> dict:
+    """Generating a user with the specified password
+
+    Args:
+        password: password for user
+    """
+    user_data = generate_user(password)
+
+    user_data["address"] = {
+        "country": faker.country(),
+        "city": faker.city(),
+        "line": faker.street_address(),
+        "postcode": faker.postcode(),
+    }
+
+    return user_data
 
 
 def generate_jwt_token(email: str = "", expired: bool = False) -> str:

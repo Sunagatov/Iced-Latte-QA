@@ -56,7 +56,7 @@ class TestAuthentication:
         with step(
             "Validation token by retrieving user information via API request by user's ID "
         ):
-            response = UsersAPI().get_user_by_id(token=token)
+            response = UsersAPI().get_user(token=token)
             assert_that(
                 response.status_code, is_(200), reason="Expected status code 200"
             )
