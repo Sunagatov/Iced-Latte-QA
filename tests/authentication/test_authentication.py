@@ -26,6 +26,7 @@ class TestAuthentication:
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=email
             )
+            print(user_data)
             assert_that(user_data, has_length(1))
             assert_that(
                 response.status_code, is_(201), reason="Expected status code 201"
