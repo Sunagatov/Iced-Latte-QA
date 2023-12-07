@@ -41,11 +41,15 @@ def assert_partial_match(expected: dict, actual: dict, fields_to_compare: list) 
         expected: The object with expected values.
         actual: The object to compare against the expected values.
         fields_to_compare: List of field names (str) to compare.
+
+    Raises:
+        AssertionError: If the fields do not match.
     """
     for field in fields_to_compare:
+        expected_value = expected.get(field)
+        actual_value = actual.get(field)
         assert_that(
-            actual.get(field),
-            is_(expected.get(field)),
-            reason=f"Field {field} does not match. Expected: {expected.get(field)}, "
-            f"Actual: {actual.get(field)}",
+            actual_value,
+            is_(expected_value),
+            f"Field '{field}' mismatch: Expected '{expected_value}', Found '{actual_value}'",
         )

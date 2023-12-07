@@ -27,43 +27,53 @@ def generate_string(length: int, additional_characters: list = None) -> str:
     return "".join(result)
 
 
-def generate_user(password: str = DEFAULT_PASSWORD) -> dict:
-    """Generating a user with the specified password
+def generate_user(
+    first_name_length: int = None,
+    last_name_length: int = None,
+    password: str = DEFAULT_PASSWORD,
+    with_address: bool = False,
+    **kwargs
+):
+    """
+    Generate a user with customizable attributes.
 
     Args:
-        password: password for user
-    """
+        first_name_length: Length of the first name.
+        last_name_length: Length of the last name.
+        password: password for user.
+        with_address: Include address information if True.
+        **kwargs: Additional attributes to override.
 
-    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    Returns:
+        dict: Generated user data.
+    """
+    encrypted_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
     user_data = {
         "id": faker.uuid4(),
-        "firstName": faker.first_name(),
-        "lastName": faker.last_name(),
+        "firstName": faker.first_name()
+        if first_name_length is None
+        else generate_string(first_name_length),
+        "lastName": faker.last_name()
+        if last_name_length is None
+        else generate_string(last_name_length),
         "email": faker.email(),
         "birthDate": faker.date_of_birth().strftime("%Y-%m-%d"),
         "phoneNumber": faker.phone_number(),
         "stripeCustomerToken": faker.uuid4(),
         "password": password,
-        "hashed_password": hashed_password,
+        "hashed_password": encrypted_password,
     }
 
-    return user_data
+    if with_address:
+        user_data["address"] = {
+            "country": faker.country(),
+            "city": faker.city(),
+            "line": faker.street_address(),
+            "postcode": faker.postcode(),
+        }
 
-
-def generate_user_with_address(password: str = DEFAULT_PASSWORD) -> dict:
-    """Generating a user with the specified password
-
-    Args:
-        password: password for user
-    """
-    user_data = generate_user(password)
-
-    user_data["address"] = {
-        "country": faker.country(),
-        "city": faker.city(),
-        "line": faker.street_address(),
-        "postcode": faker.postcode(),
-    }
+    user_data.update(kwargs)
 
     return user_data
 
