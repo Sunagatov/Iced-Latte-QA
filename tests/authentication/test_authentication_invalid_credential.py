@@ -39,11 +39,6 @@ class TestAuthentication:
                 response.status_code, is_(401), reason="Expected status code 401"
             )
 
-    @pytest.mark.skip(
-        reason="Bug in the API => wrong authentication response status code. "
-        "Expected status code = 401"
-        "Actual status code = 403"
-    )
     def test_authentication_incorrect_email(self):
         with step("Generation data for registration"):
             data = generate_user_data(
@@ -68,11 +63,6 @@ class TestAuthentication:
                 response.status_code, is_(401), reason="Expected status code 401"
             )
 
-    @pytest.mark.skip(
-        reason="Bug in the API => wrong authentication response status code. "
-        "Expected status code = 401"
-        "Actual status code = 403"
-    )
     def test_authentication_incorrect_password_email(self):
         with step("Generation data for registration"):
             data = generate_user_data(

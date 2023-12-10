@@ -1,11 +1,16 @@
+import requests
 from allure import title, step
+from hamcrest import assert_that, is_
 from psycopg2 import connect
 from pytest import fixture
 
-from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS
+from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS, HOST
+from framework.endpoints.cart_api import CartAPI
+from framework.endpoints.users_api import UsersAPI
 from framework.queries.postgres_db import PostgresDB
 from framework.endpoints.authenticate_api import AuthenticateAPI
-from framework.tools.generators import generate_user
+from framework.tools.generators import generate_user, generate_user_data
+from framework.tools.logging import log_request
 
 # Connection configuration
 PostgresDB.dbname = DB_NAME
@@ -80,3 +85,28 @@ def create_authorized_user(postgres):
 
     with step("Removing user from DB"):
         postgres.delete_user(user_to_create["id"])
+
+
+@fixture(scope="function")
+def creating_user_via_api():
+    """Creating and authorizing a user via API"""
+    with step("Generation data for registration"):
+        data = generate_user_data(
+            first_name_length=8, last_name_length=8, password_length=8
+        )
+
+    with step("Registration new user"):
+        response_registration = AuthenticateAPI().registration(body=data)
+
+        assert_that(
+            response_registration.status_code,
+            is_(201),
+            reason="Expected status code 201",
+        )
+        token = response_registration.json()["token"]
+
+    with step("Getting user's info via API"):
+        getting_user_response = UsersAPI().get_user(token=token)
+        new_user_id = getting_user_response.json()["id"]
+
+    return token, new_user_id
