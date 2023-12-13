@@ -1,17 +1,14 @@
+from typing import List, Dict
+
 from hamcrest import assert_that, equal_to, has_key
 
 
-def verify_products_in_response(response) -> list:
-    """Extracts product info from a response.
-
-    Iterates through the items in the response and extracts the product ID,
-    quantity for each item into a list of dictionaries.
+def get_product_info(response) -> List[Dict]:
+    """Extracts product info (ID and quantity) from a response.
 
     Args:
-       response: The response to extract products from
-
+       response: The JSON response.
     """
-
     response_data = response.json()
     extracted_products = []
 
@@ -26,7 +23,7 @@ def verify_products_in_response(response) -> list:
     return extracted_products
 
 
-def assert_compare_product_to_add_with_response(add_product: list[dict], expected_product: list[dict]):
+def assert_compare_product_to_add_with_response(add_product: List[Dict], expected_product: List[Dict]):
     """ Assertion that product were added to the shopping cart
 
     Args:
@@ -47,7 +44,14 @@ def assert_compare_product_to_add_with_response(add_product: list[dict], expecte
                     f"Quantity mismatch for product {expected_id}: Expected {expected_quantity}, found {matching_product['productQuantity']} in add_product")
 
 
-def extract_item_id(response):
+def get_item_id(response) -> Dict:
+    """ Gets item id from a JSON response.
+
+    Args:
+        response: The JSON response to extract ids from.
+    Raises:
+        ValueError: If JSON decoding of response fails.
+    """
     try:
         response_data = response.json()
     except ValueError:
@@ -57,33 +61,32 @@ def extract_item_id(response):
     extracted_ids = []
 
     for item in response_data.get('items', []):
-        item_id = item.get('id')
-        if item_id:
+        if item_id := item.get('id'):
             extracted_ids.append(item_id)
 
     return {"shoppingCartItemIds": extracted_ids}
 
 
-def extract_define_quantity_items_id(response, num_items_to_delete=None):
-    # Initialize an empty list to store the extracted information
+def get_define_quantity_items_id(response, num_items_to_delete: int) -> Dict:
+    """ Gets item ids from a JSON response.
+    Args:
+       num_items_to_delete: the quantity of items for delete
+       response: The JSON response to extract ids from.
+    Raises:
+       ValueError: If JSON decoding of response fails.
+    """
+
     try:
         response_data = response.json()
     except ValueError:
-        # Handle cases where JSON decoding fails
         return {"error": "Invalid JSON response"}
 
     extracted_ids = []
 
-    # Iterate through each item in the 'items' list
     for item in response_data.get('items', []):
-        # Extract item ID and add to the list
-        item_id = item.get('id')
-        if item_id:
+        if item_id := item.get('id'):
             extracted_ids.append(item_id)
 
-    if num_items_to_delete is not None:
+    if num_items_to_delete > 0:
         extracted_ids = extracted_ids[:num_items_to_delete]
     return {"shoppingCartItemIds": extracted_ids}
-
-
-

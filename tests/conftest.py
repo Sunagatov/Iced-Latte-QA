@@ -88,7 +88,7 @@ def create_authorized_user(postgres):
 
 
 @fixture(scope="function")
-def creating_user_via_api():
+def create_and_delete_user_via_api():
     """Creating and authorizing a user via API """
     with step("Generation data for registration"):
         data = generate_user_data(
@@ -107,4 +107,7 @@ def creating_user_via_api():
         getting_user_response = UsersAPI().get_user(token=token)
         new_user_id = getting_user_response.json()["id"]
 
-    return token, new_user_id
+    yield token, new_user_id
+
+    with step("Deleting user"):
+        UsersAPI().delete_user(token=token)

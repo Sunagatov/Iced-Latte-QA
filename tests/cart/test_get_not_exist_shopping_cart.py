@@ -12,10 +12,11 @@ class TestCart:
     @description(
         "GIVEN user is registered and does not have shopping cart"
         "WHEN user get the cart"
-        "THEN status HTTP CODE = 404"
+        "THEN status HTTP CODE = 404 and the response body contains an appropriate error message."
     )
-    def test_get_user_cart(self, creating_user_via_api):
-        token, user_id = creating_user_via_api
+    def test_get_user_cart(self, create_and_delete_user_via_api):
+        with step("Registration of user"):
+            token, user_id = create_and_delete_user_via_api
 
         with step("Get cart of user and verify that user doesn't have a shopping cart"):
             response_get_cart = CartAPI().get_user_cart(token=token, expected_status_code=404)
@@ -25,8 +26,5 @@ class TestCart:
             assert_response_message(response_get_cart, expected_message)
             assert_content_type(response_get_cart, "application/json")
 
-        with step("Deleting user"):
-            UsersAPI().delete_user(token=token)
-            response_after_del = UsersAPI().get_user(token=token)
-            assert_that(response_after_del.status_code, is_(401))
+
 

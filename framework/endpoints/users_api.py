@@ -1,8 +1,8 @@
 import requests
-from hamcrest import assert_that, is_
 from requests import Response
 
 from configs import HOST
+from framework.asserts.common import assert_status_code
 from framework.tools.logging import log_request
 
 
@@ -30,11 +30,11 @@ class UsersAPI:
         Args:
             expected_status_code: Expected HTTP code from Response
             token: JWT token for authorization of request
+
         """
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         response = requests.delete(headers=headers, url=self.url)
-        assert_that(response.status_code, is_(expected_status_code),
-                    reason=f"Expected status code {expected_status_code}, found: {response.status_code}")
+        assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
         return response

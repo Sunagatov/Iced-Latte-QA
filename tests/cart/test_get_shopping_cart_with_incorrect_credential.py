@@ -42,7 +42,6 @@ class TestGetShoppingCart:
             data = generate_user_data(first_name_length=6, last_name_length=5, password_length=3)
             email = data["email"]
             expired_token = generate_jwt_token(email=email, expired=True)
-            # print(expired_token)
             response_get_cart = CartAPI().get_user_cart(token=expired_token, expected_status_code=401)
             assert_content_type(response_get_cart, "text/plain; charset=utf-8")
 
@@ -71,8 +70,8 @@ class TestGetShoppingCart:
         "WHEN the user sends a request to get information about shopping cart with blacklisted token, "
         "THEN the response code is 401 and the response body contains the error message"
     )
-    def test_getting_shopping_cart_with_blacklisted_token(self, creating_user_via_api):
-        token = creating_user_via_api
+    def test_getting_shopping_cart_with_blacklisted_token(self, create_and_delete_user_via_api):
+        token = create_and_delete_user_via_api
 
         with step("Logging out of user"):
             logging_out_response = AuthenticateAPI().logout(token=token)
