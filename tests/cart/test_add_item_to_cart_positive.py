@@ -42,6 +42,3 @@ class TestCart:
             product_list_after_add = get_product_info(response=response_get_cart_after_add)
             assert_compare_product_to_add_with_response(items_to_add, product_list_after_add)
             assert_content_type(response_get_cart, "application/json")
-
-
-

@@ -31,44 +31,24 @@ class CartAPI:
 
         return response
 
-    def delete_item_from_cart(self, token: str, item_to_delete: dict, expected_status_code: int = 200) -> Response:
-        """Deleting item from shopping cart
-
-        Args:
-            item_to_delete:  data for deleting items from shopping cart with required fields
-                  {
-                    "shoppingCartItemIds": ["CartItemId"]
-
-                  }
-            expected_status_code: expected http status code from response
-            token: JWT token for authorization of request
-        """
-        headers = self.headers
-        headers["Authorization"] = f"Bearer {token}"
-        path = self.url + "/items"
-        response = requests.delete(url=path, headers=headers, data=json.dumps(item_to_delete))
-        assert_status_code(response, expected_status_code=expected_status_code)
-        log_request(response)
-
-        return response
-
-    def update_quantity_product(self, token: str, item_to_update: dict,
+    def update_quantity_product(self, token: str, item_id: str, item_quantity: int,
                                 expected_status_code: int = 200) -> Response:
         """Updating product's quantity
 
         Args:
+            item_quantity: quantity to update
+            item_id: item to update
             expected_status_code: expected http status code from response
             token: JWT token for authorization of request
-            item_to_update: shopping cart Item id and quantity to update
-                           {
-                             "shoppingCartItemId": item_id,
-                            "productQuantityChange": quantity
-                           }
         """
+        body = {"shoppingCartItemId": item_id,
+                "productQuantityChange": item_quantity
+
+                }
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = self.url + "/items"
-        response = requests.patch(url=path, data=json.dumps(item_to_update), headers=headers)
+        response = requests.patch(url=path, data=json.dumps(body), headers=headers)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
         return response
@@ -94,4 +74,26 @@ class CartAPI:
         response = requests.post(url=path, data=json.dumps(body), headers=headers)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
+        return response
+
+    def delete_item_from_cart(self, token: str, cart_item_id: list, expected_status_code: int = 200) -> Response:
+        """Deleting item from shopping cart
+
+        Args:
+            cart_item_id:  data for deleting items from shopping cart with required fields
+            expected_status_code: expected http status code from response
+            token: JWT token for authorization of request
+        """
+
+        body = {
+            "shoppingCartItemIds": cart_item_id
+
+        }
+        headers = self.headers
+        headers["Authorization"] = f"Bearer {token}"
+        path = self.url + "/items"
+        response = requests.delete(url=path, headers=headers, data=json.dumps(body))
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
         return response
