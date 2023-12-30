@@ -1,14 +1,15 @@
-from random import choice
-from string import ascii_lowercase
-import bcrypt
 import base64
-import jwt
 import datetime
-
-from configs import DEFAULT_PASSWORD, JWT_SECRET
 import random
 import string
+from random import choice
+from typing import Optional
+
+import bcrypt
+import jwt
 from faker import Faker
+
+from configs import DEFAULT_PASSWORD, JWT_SECRET
 
 faker = Faker()
 
@@ -20,7 +21,7 @@ def generate_string(length: int, additional_characters: list = None) -> str:
         length:                 length of the generated string;
         additional_characters:  addition of special characters.
     """
-    result = [choice(ascii_lowercase) for _ in range(length)]
+    result = [choice(string.ascii_lowercase) for _ in range(length)]
     if additional_characters:
         result += additional_characters
 
@@ -28,8 +29,8 @@ def generate_string(length: int, additional_characters: list = None) -> str:
 
 
 def generate_user(
-    first_name_length: int = None,
-    last_name_length: int = None,
+    first_name_length: Optional[int] = None,
+    last_name_length: Optional[int] = None,
     password: str = DEFAULT_PASSWORD,
     with_address: bool = False,
     **kwargs
@@ -38,8 +39,8 @@ def generate_user(
     Generate a user with customizable attributes.
 
     Args:
-        first_name_length: Length of the first name.
-        last_name_length: Length of the last name.
+        first_name_length: Optional[int] - Length of the first name.
+        last_name_length: Optional[int] - Length of the last name.
         password: password for user.
         with_address: Include address information if True.
         **kwargs: Additional attributes to override.
@@ -51,12 +52,12 @@ def generate_user(
 
     user_data = {
         "id": faker.uuid4(),
-        "firstName": faker.first_name()
-        if first_name_length is None
-        else generate_string(first_name_length),
-        "lastName": faker.last_name()
-        if last_name_length is None
-        else generate_string(last_name_length),
+        "firstName": generate_string(first_name_length)
+        if first_name_length is not None
+        else faker.first_name(),
+        "lastName": generate_string(last_name_length)
+        if last_name_length is not None
+        else faker.last_name(),
         "email": faker.email(),
         "birthDate": faker.date_of_birth().strftime("%Y-%m-%d"),
         "phoneNumber": faker.phone_number(),

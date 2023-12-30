@@ -42,9 +42,7 @@ class TestUpdateUser:
                 updating_user_response.json(), user_data_to_update
             )
 
-    fields = ["id", "email"]
-
-    @pytest.mark.parametrize("data", fields)
+    @pytest.mark.parametrize("data", ["id", "email"])
     @title("Updating User's Email and ID is ignored")
     @description(
         "GIVEN the user is logged in, "
