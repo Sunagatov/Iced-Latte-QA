@@ -36,7 +36,18 @@ def generate_and_insert_user(postgres):
     """
 
     user = generate_user()
-    postgres.create_user(user)
+
+    key_mapping = {
+        "firstName": "first_name",
+        "lastName": "last_name",
+        "birthDate": "birth_date",
+        "phoneNumber": "phone_number",
+        "stripeCustomerToken": "stripe_customer_token",
+    }
+    user_to_insert = {key_mapping.get(k, k): v for k, v in user.items()}
+
+    postgres.create_user(user_to_insert)
+
     return user
 
 

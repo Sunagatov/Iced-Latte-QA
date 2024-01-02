@@ -119,6 +119,8 @@ class PostgresDB:
                     , first_name
                     , last_name
                     , stripe_customer_token
+                    , birth_date
+                    , phone_number
                     , email
                     , password
                     , address_id
@@ -130,7 +132,10 @@ class PostgresDB:
                 VALUES ('{user["id"]}'
                     , '{user["first_name"]}'
                     , '{user["last_name"]}'
-                    , null, '{user["email"]}'
+                    , '{user["stripe_customer_token"]}'
+                    , '{user["birth_date"]}'
+                    , '{user["phone_number"]}'
+                    , '{user["email"]}'
                     , '{user["hashed_password"]}'
                     , null
                     , true

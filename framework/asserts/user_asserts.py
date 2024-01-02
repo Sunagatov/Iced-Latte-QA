@@ -1,7 +1,7 @@
 from hamcrest import assert_that, is_
 
 
-def assert_all_user_data_matches(response_data: dict, expected_user: dict) -> None:
+def assert_user_data_matches(response_data: dict, expected_user: dict) -> None:
     """Asserts that all relevant user data in the response matches the expected user data.
 
     Args:
@@ -12,30 +12,44 @@ def assert_all_user_data_matches(response_data: dict, expected_user: dict) -> No
         AssertionError: If any of the assertions fail.
     """
 
-    fields_to_compare = {
-        "id": "id",
-        "firstName": "first_name",
-        "lastName": "last_name",
-        "email": "email",
-    }
+    fields = [key for key in response_data if key != "address"]
 
-    for response_field, user_field in fields_to_compare.items():
+    assert_partial_match(expected_user, response_data, fields)
+
+
+def assert_update_user_data_matches(response_data: dict, expected_user: dict) -> None:
+    """Asserts that all relevant user data in the response matches the expected user data.
+
+    Args:
+        response_data: The user data from the API response.
+        expected_user: The expected user data.
+
+    Raises:
+        AssertionError: If any of the assertions fail.
+    """
+
+    fields = ["firstName", "lastName", "birthDate", "phoneNumber"]
+
+    assert_partial_match(expected_user, response_data, fields)
+
+
+def assert_partial_match(expected: dict, actual: dict, fields_to_compare: list) -> None:
+    """
+    Asserts that the specified fields in the actual object match those in the expected object.
+
+    Args:
+        expected: The object with expected values.
+        actual: The object to compare against the expected values.
+        fields_to_compare: List of field names (str) to compare.
+
+    Raises:
+        AssertionError: If the fields do not match.
+    """
+    for field in fields_to_compare:
+        expected_value = expected.get(field)
+        actual_value = actual.get(field)
         assert_that(
-            response_data[response_field],
-            is_(expected_user[user_field]),
-            reason=f"Expected {response_field} should be {expected_user[user_field]}, found: {response_data[response_field]}",
-        )
-
-    fields_to_assert_none = {
-        "stripeCustomerToken": "user stripe customer token",
-        "address": "user address",
-        "birthDate": "user birth date",
-        "phoneNumber": "user phone number",
-    }
-
-    for field, description in fields_to_assert_none.items():
-        assert_that(
-            response_data[field],
-            is_(None),
-            reason=f"Expected {description} should be None",
+            actual_value,
+            is_(expected_value),
+            f"Field '{field}' mismatch: Expected '{expected_value}', Found '{actual_value}'",
         )

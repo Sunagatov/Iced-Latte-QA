@@ -7,7 +7,7 @@ from framework.asserts.common import (
     assert_content_type,
     assert_response_message,
 )
-from framework.asserts.user_asserts import assert_all_user_data_matches
+from framework.asserts.user_asserts import assert_user_data_matches
 from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.endpoints.users_api import UsersAPI
 from framework.tools.generators import generate_user
@@ -22,7 +22,7 @@ class TestGetUser:
         "WHEN the user sends a request to get their own information, "
         "THEN the response code is 200 and the response body contains the current user's data."
     )
-    def test_get_user_self_info_with_valid_id(self, create_authorized_user):
+    def test_get_user_self_info(self, create_authorized_user):
         user, token = [create_authorized_user["user"], create_authorized_user["token"]]
 
         with step("Getting user info via API"):
@@ -33,7 +33,7 @@ class TestGetUser:
 
         with step("Checking the response body"):
             user_data = getting_user_response.json()
-            assert_all_user_data_matches(user_data, user)
+            assert_user_data_matches(user_data, user)
 
     @pytest.mark.skip(reason="IL-230")
     @title("Getting User Info with Invalid Token")
@@ -43,7 +43,7 @@ class TestGetUser:
         "THEN the response code is 401 and the response body contains an appropriate error message."
     )
     def test_get_user_info_with_invalid_token(self):
-        with step("Getting user info by ID"):
+        with step("Getting user info"):
             invalid_token = "invalid_token"
             getting_user_response = UsersAPI().get_user(token=invalid_token)
 
