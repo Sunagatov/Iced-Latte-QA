@@ -1,5 +1,5 @@
-# Online-Store-QA
-Automated tests in Python for project Online-Store -> https://github.com/Sunagatov/Online-Store/
+# Iced Latte QA
+Automated tests in Python for project Iced Latte -> https://github.com/Sunagatov/Iced-Latte/
 
 ## Instruction
 For running tests should be created configs.py in root directory of format:

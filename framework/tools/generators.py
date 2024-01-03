@@ -1,14 +1,15 @@
-from random import choice
-from string import ascii_lowercase
-import bcrypt
 import base64
-import jwt
 import datetime
-
-from configs import DEFAULT_PASSWORD, JWT_SECRET
 import random
 import string
+from random import choice
+from typing import Optional
+
+import bcrypt
+import jwt
 from faker import Faker
+
+from configs import DEFAULT_PASSWORD, JWT_SECRET
 
 faker = Faker()
 
@@ -20,29 +21,62 @@ def generate_string(length: int, additional_characters: list = None) -> str:
         length:                 length of the generated string;
         additional_characters:  addition of special characters.
     """
-    result = [choice(ascii_lowercase) for _ in range(length)]
+    result = [choice(string.ascii_lowercase) for _ in range(length)]
     if additional_characters:
         result += additional_characters
 
     return "".join(result)
 
 
-def generate_user(password: str = DEFAULT_PASSWORD) -> dict:
-    """Generating a user with the specified password
+def generate_user(
+    first_name_length: Optional[int] = None,
+    last_name_length: Optional[int] = None,
+    password: str = DEFAULT_PASSWORD,
+    with_address: bool = False,
+    **kwargs
+):
+    """
+    Generate a user with customizable attributes.
 
     Args:
-        password: password for user
-    """
+        first_name_length: Optional[int] - Length of the first name.
+        last_name_length: Optional[int] - Length of the last name.
+        password: password for user.
+        with_address: Include address information if True.
+        **kwargs: Additional attributes to override.
 
-    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    return {
+    Returns:
+        dict: Generated user data.
+    """
+    encrypted_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    user_data = {
         "id": faker.uuid4(),
+        "firstName": generate_string(first_name_length)
+        if first_name_length is not None
+        else faker.first_name(),
+        "lastName": generate_string(last_name_length)
+        if last_name_length is not None
+        else faker.last_name(),
         "email": faker.email(),
-        "first_name": faker.first_name(),
-        "last_name": faker.last_name(),
+        "birthDate": faker.date_of_birth().strftime("%Y-%m-%d"),
+        "phoneNumber": faker.phone_number(),
+        "stripeCustomerToken": faker.uuid4(),
         "password": password,
-        "hashed_password": hashed_password,
+        "hashed_password": encrypted_password,
     }
+
+    if with_address:
+        user_data["address"] = {
+            "country": faker.country(),
+            "city": faker.city(),
+            "line": faker.street_address(),
+            "postcode": faker.postcode(),
+        }
+
+    user_data.update(kwargs)
+
+    return user_data
 
 
 def generate_jwt_token(email: str = "", expired: bool = False) -> str:

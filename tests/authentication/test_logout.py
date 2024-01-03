@@ -26,7 +26,7 @@ class TestLogout:
                 reason='Failed request "logout"',
             )
 
-        with step("Re-getting data user via API"):
+        with step("Re-getting data user by ID via API"):
             getting_user_response = UsersAPI().get_user(token=token)
 
         with step("Checking the response from the API"):

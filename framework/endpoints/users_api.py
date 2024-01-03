@@ -12,7 +12,7 @@ class UsersAPI:
         self.headers = {"Content-Type": "application/json"}
 
     def get_user(self, token: str = "") -> Response:
-        """Getting info about user
+        """Getting info about user via API
 
         Args:
             token:      JWT token for authorization of request
@@ -23,6 +23,7 @@ class UsersAPI:
         log_request(response)
 
         return response
+
 
     def delete_user(self, token: str, expected_status_code: int = 200) -> Response:
         """ Deleting user
@@ -37,4 +38,18 @@ class UsersAPI:
         response = requests.delete(headers=headers, url=self.url)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
+
+    def update_user(self, token: str = "", user_data: dict = None) -> Response:
+        """Updating user info
+
+        Args:
+            token:      JWT token for authorization of request
+            user_data:  data for updating user info
+        """
+        headers = self.headers
+        headers["Authorization"] = f"Bearer {token}"
+        response = requests.put(headers=headers, url=self.url, json=user_data)
+        log_request(response)
+
+
         return response
