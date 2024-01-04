@@ -2,6 +2,7 @@ import requests
 from requests import Response
 
 from configs import HOST
+from framework.asserts.common import assert_status_code
 from framework.tools.logging import log_request
 
 
@@ -23,6 +24,21 @@ class UsersAPI:
 
         return response
 
+
+    def delete_user(self, token: str, expected_status_code: int = 200) -> Response:
+        """ Deleting user
+
+        Args:
+            expected_status_code: Expected HTTP code from Response
+            token: JWT token for authorization of request
+
+        """
+        headers = self.headers
+        headers["Authorization"] = f"Bearer {token}"
+        response = requests.delete(headers=headers, url=self.url)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
     def update_user(self, token: str = "", user_data: dict = None) -> Response:
         """Updating user info
 
@@ -34,5 +50,6 @@ class UsersAPI:
         headers["Authorization"] = f"Bearer {token}"
         response = requests.put(headers=headers, url=self.url, json=user_data)
         log_request(response)
+
 
         return response
