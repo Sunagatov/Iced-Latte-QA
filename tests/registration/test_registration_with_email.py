@@ -36,11 +36,11 @@ class TestAuthentication:
 
         with step("Extract code from email for confirmation registration"):
             email_box = "Inbox"
-            key = 'FROM'
+            key = 'from_'
             value = 'youricedlatteshop@gmail.com'
             token = Email(imap_server=imap_server, email_address=email_address,
-                          gmail_password=gmail_password).extract_confirmation_code_from_email(email_box=email_box,
-                                                                                              key=key, value=value)
+                          mail_password=gmail_password).extract_confirmation_code_from_email(email_box=email_box,
+                                                                                             key=key, value=value)
             assert_that(token, not_(None), "Token should not be empty")
 
         with step("Confirm registration using code from email"):
