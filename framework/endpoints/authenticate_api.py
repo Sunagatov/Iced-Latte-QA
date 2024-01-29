@@ -5,7 +5,8 @@ import requests
 from requests import Response
 
 from configs import HOST
-from framework.tools.logging import log_request
+from framework.asserts.common import assert_status_code, assert_content_type
+from framework.tools.logging_allure import log_request
 
 
 class AuthenticateAPI:
@@ -14,10 +15,11 @@ class AuthenticateAPI:
         self.url = HOST + "/api/v1/auth"
         self.headers = {"Content-Type": "application/json"}
 
-    def authentication(self, email: str, password: str) -> Response:
+    def authentication(self, email: str, password: str, expected_status_code: int = 200) -> Response:
         """Endpoint for authentication of user
 
         Args:
+            expected_status_code: expected http status code from response
             email:    user's email address;
             password: password for email.
         """
@@ -27,6 +29,7 @@ class AuthenticateAPI:
         }
         path = self.url + "/authenticate"
         response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
 
         return response
@@ -45,10 +48,11 @@ class AuthenticateAPI:
 
         return response
 
-    def registration(self, body: dict) -> Response:
+    def registration(self, body: dict, expected_status_code=200) -> Response:
         """Endpoint for registration of user
 
         Args:
+            expected_status_code: expected http status code from response
             body:   registration data with required fields:
                         email:      electronic mail;
                         firstName:  name;
@@ -57,6 +61,24 @@ class AuthenticateAPI:
         """
         path = self.url + "/register"
         response = requests.post(url=path, data=json.dumps(body), headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
+        return response
+
+    def confirmation_email(self, code: str, expected_status_code: int = 201) -> Response:
+        """Endpoint for authentication of user
+
+        Args:
+            expected_status_code: expected http status code from response
+            code: confirmation code from email
+        """
+        data = {
+            "token": code
+        }
+        path = self.url + "/confirm"
+        response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
 
         return response

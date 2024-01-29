@@ -20,6 +20,7 @@ class TestCart:
 
         with step("Update quantity of product"):
             data_for_update_not_exist_item = data_for_not_exist_shopping_cart_item_id
+            shopping_cart_item_id = data_for_update_not_exist_item["shoppingCartItemId"]
             response_after_update = CartAPI().update_quantity_product(token=token,
                                                                       item_id=data_for_update_not_exist_item[
                                                                           "shoppingCartItemId"],
@@ -28,8 +29,6 @@ class TestCart:
                                                                       expected_status_code=404)
 
         with step("Checking the response body and the Content-Type"):
-            expected_message_after_update = "The shopping cart item with shoppingCartItemId = ec39b8c6-ba83-4f0a-8332-0769be35d5f9 is not found."
+            expected_message_after_update = f"The shopping cart item with shoppingCartItemId = {shopping_cart_item_id} is not found."
             assert_response_message(response_after_update, expected_message_after_update)
             assert_content_type(response_after_update, "application/json")
-
-
