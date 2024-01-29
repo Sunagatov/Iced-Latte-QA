@@ -6,7 +6,7 @@ from requests import Response
 from configs import HOST
 from framework.asserts.common import assert_status_code
 
-from framework.tools.logging import log_request
+from framework.tools.logging_allure import log_request
 
 
 class CartAPI:
@@ -43,7 +43,6 @@ class CartAPI:
         """
         body = {"shoppingCartItemId": item_id,
                 "productQuantityChange": item_quantity
-
                 }
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"

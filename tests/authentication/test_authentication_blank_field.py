@@ -6,6 +6,7 @@ from hamcrest.library import contains_string
 from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.tools.generators import generate_user_data
 from framework.tools.matcher import is_timestamp_valid
+from tests.conftest import create_authorized_user
 
 TIMESTAMP_PATTERN = r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
 
@@ -26,17 +27,16 @@ class TestAuthentication:
                 " ",
                 400,
                 "Email is the mandatory attribute",
-                id="password_and_email_blank",
+
             ),
             pytest.param(
                 None,
                 " ",
                 400,
                 "Password is the mandatory attribute",
-                id="password_blank",
             ),
             pytest.param(
-                " ", None, 400, "Email is the mandatory attribute", id="email_blank"
+                " ", None, 400, "Email is the mandatory attribute"
             ),
         ],
     )
@@ -45,25 +45,16 @@ class TestAuthentication:
         email: str,
         password: str,
         expected_status_code: int,
-        expected_message_part: str,
+        expected_message_part: str, create_authorized_user
     ):
-        with step("Generation data for registration"):
-            data = generate_user_data(
-                first_name_length=5, last_name_length=5, password_length=8
-            )
-
-        with step("Registration new user"):
-            response = AuthenticateAPI().registration(body=data)
-            assert_that(
-                response.status_code, is_(201), reason="Expected status code 201"
-            )
-
+        with step("Registration of user"):
+            user, token = create_authorized_user["user"], create_authorized_user["token"]
         with step("Preparation data for authentication request"):
-            email = data["email"] if email is None else email
-            password = data["password"] if password is None else password
+            email = user["email"] if email is None else email
+            password = user["password"] if password is None else password
 
         with step("Authentication user with given credentials"):
-            response = AuthenticateAPI().authentication(email=email, password=password)
+            response = AuthenticateAPI().authentication(email=email, password=password, expected_status_code=400)
 
         with step(
             "Verify the response contains the expected part of message, http status code,and "

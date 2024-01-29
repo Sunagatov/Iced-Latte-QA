@@ -3,7 +3,7 @@ import datetime
 import random
 import string
 from random import choice
-from typing import Optional
+from typing import Optional, Any
 
 import bcrypt
 import jwt
@@ -29,11 +29,11 @@ def generate_string(length: int, additional_characters: list = None) -> str:
 
 
 def generate_user(
-    first_name_length: Optional[int] = None,
-    last_name_length: Optional[int] = None,
-    password: str = DEFAULT_PASSWORD,
-    with_address: bool = False,
-    **kwargs
+        first_name_length: Optional[int] = None,
+        last_name_length: Optional[int] = None,
+        password: str = DEFAULT_PASSWORD,
+        with_address: bool = False,
+        **kwargs
 ):
     """
     Generate a user with customizable attributes.
@@ -87,14 +87,15 @@ def generate_jwt_token(email: str = "", expired: bool = False) -> str:
         expired: flag for expired token (True - expired, False - not expired)
     """
 
-    payload = {
-        "sub": email,
-        "iat": datetime.datetime.utcnow(),
-    }
+    payload = {"sub": email, "iat": datetime.datetime.now(datetime.timezone.utc)}
     if expired:
-        payload["exp"] = datetime.datetime.utcnow() - datetime.timedelta(seconds=1)
+        payload["exp"] = datetime.datetime.now(
+            datetime.timezone.utc
+        ) - datetime.timedelta(seconds=1)
     else:
-        payload["exp"] = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        payload["exp"] = datetime.datetime.now(
+            datetime.timezone.utc
+        ) + datetime.timedelta(days=1)
 
     encoded_secret_key = JWT_SECRET
     secret_key = base64.b64decode(encoded_secret_key)
@@ -120,23 +121,24 @@ def generate_password(length: int) -> str:
     if all(char not in digits for char in password):
         random_index = random.randint(0, length - 1)
         password = (
-            password[:random_index] + random.choice(digits) + password[random_index:]
+                password[:random_index] + random.choice(digits) + password[random_index:]
         )
     if all(char not in letters for char in password):
         random_index = random.randint(0, length - 1)
         password = (
-            password[:random_index] + random.choice(letters) + password[random_index:]
+                password[:random_index] + random.choice(letters) + password[random_index:]
         )
 
     return password
 
 
 def generate_user_data(
-    password_length: int, first_name_length: int, last_name_length: int
+        password_length: int, first_name_length: int, last_name_length: int, email: Any = faker.email()
 ) -> dict:
     """Function for generation random user data
 
     Args:
+        email: email to register
         password_length: length generated password
         first_name_length: length generated string
         last_name_length:  length generated string
@@ -151,5 +153,5 @@ def generate_user_data(
         "firstName": first_name,
         "lastName": last_name,
         "password": generate_password(password_length),
-        "email": faker.email(),
+        "email": email,
     }

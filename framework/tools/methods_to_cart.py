@@ -1,6 +1,7 @@
 import random
 from typing import List, Dict, Any, Union
-from hamcrest import assert_that, equal_to, has_key, not_, has_items, is_not, has_item, is_in
+
+from hamcrest import assert_that as hamcrest_assert_that, equal_to, has_key
 from requests import Response
 
 
@@ -37,12 +38,12 @@ def assert_compare_product_to_add_with_response(add_product: List[Dict], expecte
         expected_id = expected['id']
         expected_quantity = expected['productQuantity']
 
-        assert_that(add_product_dict, has_key(expected_id),
-                    f"Expected product with ID {expected_id} not found in add_product")
+        hamcrest_assert_that(add_product_dict, has_key(expected_id),
+                             f"Expected product with ID {expected_id} not found in add_product")
 
         matching_product = add_product_dict[expected_id]
-        assert_that(matching_product['productQuantity'], equal_to(expected_quantity),
-                    f"Quantity mismatch for product {expected_id}: Expected {expected_quantity}, found {matching_product['productQuantity']} in add_product")
+        hamcrest_assert_that(matching_product['productQuantity'], equal_to(expected_quantity),
+                             f"Quantity mismatch for product {expected_id}: Expected {expected_quantity}, found {matching_product['productQuantity']} in add_product")
 
 
 def get_item_id(response) -> Union[dict, list]:
@@ -157,5 +158,6 @@ def get_quantity_specific_cart_item(response: Response, specific_item_id: str) -
         if item.get('id') == specific_item_id:
             return item.get('productQuantity')
     return f"Item with ID {specific_item_id} not found."
+
 
 

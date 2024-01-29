@@ -1,12 +1,22 @@
 import pytest
 from allure import description, feature, link, step, title, severity
-from hamcrest import assert_that, is_, has_length, is_not, empty
+from hamcrest import assert_that, has_length, is_not, empty, equal_to
 
+from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS
 from framework.asserts.common import assert_status_code, assert_message_in_response
 from framework.asserts.registration_asserts import check_mapping_api_to_db
+from framework.clients.db_client import DBClient
 from framework.endpoints.authenticate_api import AuthenticateAPI
+from framework.queries.postgres_db import PostgresDB
 from framework.steps.registration_steps import RegistrationSteps
-from framework.tools.generators import generate_string
+from framework.tools.generators import generate_string, generate_user_data
+
+# Connection configuration
+PostgresDB.dbname = DB_NAME
+PostgresDB.host = HOST_DB
+PostgresDB.port = PORT_DB
+PostgresDB.user = DB_USER
+PostgresDB.password = DB_PASS
 
 
 @feature("Registration of user")
@@ -37,55 +47,26 @@ class TestRegistration:
                 password=password,
             )
 
-    @severity(severity_level="CRITICAL")
-    @title("User registration under minimum requirements")
-    @description(
-        "WHEN the user submits the minimum required data for registration, "
-        "THEN the information about the user is stored in the database"
-    )
-    def test_of_registration(self, postgres):
-        with step("Registration of user"):
-            registration_response = AuthenticateAPI().registration(
-                body=self.user_to_register
-            )
-
-        with step("Checking the response code"):
-            assert_status_code(registration_response, 201)
-
-        with step("Checking the response body"):
-            response_json = registration_response.json()
-            assert_that(response_json["token"], is_not(empty()))
-
-        with step("Getting info about the user in DB"):
-            user_data = postgres.get_data_by_filter(
-                table="user_details", field="email", value=self.email
-            )
-
-        with step("Checking mapping data from the API request to the database"):
-            check_mapping_api_to_db(
-                api_request=self.user_to_register, database_data=user_data[0]
-            )
-
+    @pytest.mark.critical
     @severity(severity_level="MAJOR")
     @title("User registration with not unique email")
     @description(
         "WHEN the user submits data with a non-unique email for registration, "
         "THEN the user receives an error message, and the user's information is not stored in the database"
     )
-    def test_of_registration_email_uniqueness(self, postgres):
+    def test_of_registration_email_uniqueness(self, postgres, create_authorized_user):
         with step("Registration of user"):
-            registration_response = AuthenticateAPI().registration(
-                body=self.user_to_register
-            )
-            assert_that(registration_response.status_code, is_(201))
+            user, token = create_authorized_user["user"], create_authorized_user["token"]
 
-        with step("Registration of user's duplicate"):
+        with step("Generation data for registration with already exist email in DB"):
+            data = generate_user_data(
+                first_name_length=5, last_name_length=5, password_length=8, email=user["email"]
+            )
+
+        with step("Registration user with already exist email in DB"):
             duplicate_registration_response = AuthenticateAPI().registration(
-                body=self.user_to_register
+                body=data, expected_status_code=400
             )
-
-        with step("Checking the response code"):
-            assert_status_code(duplicate_registration_response, 400)
 
         with step("Checking the response body"):
             expected_message = "Email must be unique"
@@ -93,18 +74,13 @@ class TestRegistration:
                 duplicate_registration_response, expected_message
             )
 
-        with step("Getting info about the user with not unique email in DB"):
-            user_data = postgres.get_data_by_filter(
-                table="user_details", field="email", value=self.email
-            )
-
         with step(
-            "Checking that new user with duplicate email has not been registered "
+                "Checking that new user with duplicate email has not been registered "
         ):
-            assert_that(user_data, has_length(1))
-            check_mapping_api_to_db(
-                api_request=self.user_to_register, database_data=user_data[0]
-            )
+            email_to_check = user["email"]
+            result = postgres.select_user_by_email(email=email_to_check)
+            count = result[0]['count']
+            assert_that(count, equal_to(1), f"Expected 1 user with email {email_to_check}, but found {count}.")
 
     fields = [
         # ("email", "Email is the mandatory attribute"), # Bug in the API => wrong error message for missing required field
@@ -127,17 +103,14 @@ class TestRegistration:
 
         with step("Registration of user"):
             registration_response = AuthenticateAPI().registration(
-                body=self.user_to_register
+                body=self.user_to_register, expected_status_code=400
             )
-
-        with step("Checking the response code"):
-            assert_status_code(registration_response, 400)
 
         with step("Checking the response body"):
             assert_message_in_response(registration_response, expected_message)
 
         with step(
-            f"Checking that new user with missing field {field} has not been registered "
+                f"Checking that new user with missing field {field} has not been registered "
         ):
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=self.email

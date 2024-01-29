@@ -31,7 +31,7 @@ class Email:
         """
         attempt = 0
         delay = 10
-        max_attempts = 3
+        max_attempts = 4
         while attempt < max_attempts:
             current_time = time.time()
 
