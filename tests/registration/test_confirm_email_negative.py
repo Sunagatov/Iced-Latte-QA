@@ -1,12 +1,10 @@
 import pytest
 from allure import description, step, title, feature, severity
-from hamcrest import assert_that, is_not, empty
 
-from configs import firstName, lastName, password, email, imap_server, email_address_to_connect, gmail_password, \
+from data_for_auth import firstName, lastName, password, email, imap_server, email_address_to_connect, gmail_password, \
     email_iced_late
 from framework.endpoints.authenticate_api import AuthenticateAPI
-from framework.asserts.common import assert_message_in_response, assert_response_message, assert_content_type
-from framework.tools.generators import generate_user_data
+from framework.asserts.common import assert_message_in_response, assert_response_message
 from tests.conftest import UserRegistrationParams
 
 

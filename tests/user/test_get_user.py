@@ -1,6 +1,6 @@
 import pytest
-from allure import feature, description, link, step, title
-from hamcrest import assert_that, is_, contains_string, is_not, empty
+from allure import feature, description, step, title
+from hamcrest import assert_that, is_
 
 from framework.asserts.common import (
     assert_status_code,
