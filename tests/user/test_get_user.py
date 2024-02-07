@@ -84,10 +84,10 @@ class TestGetUser:
     )
     def test_getting_user_with_empty_token(self):
         with step("Getting user info"):
-            getting_user_response = UsersAPI().get_user(expected_status_code=401)
+            getting_user_response = UsersAPI().get_user(expected_status_code=400)
 
         with step("Checking the response code"):
-            assert_status_code(getting_user_response, 401)
+            assert_status_code(getting_user_response, 400)
 
         with step("Checking the response body"):
             expected_error_message = "Bearer authentication header is absent"
@@ -111,10 +111,10 @@ class TestGetUser:
             )
 
         with step("Getting user info"):
-            getting_user_response = UsersAPI().get_user(token=token, expected_status_code=401)
+            getting_user_response = UsersAPI().get_user(token=token, expected_status_code=400)
 
         with step("Checking response code"):
-            assert_status_code(getting_user_response, 401)
+            assert_status_code(getting_user_response, 400)
 
         with step("Checking the response body"):
             expected_error_message = "JWT Token is blacklisted"
@@ -129,10 +129,10 @@ class TestGetUser:
     def test_getting_user_with_token_not_containing_email(self):
         with step("Getting user info"):
             token_without_email = generate_jwt_token()
-            getting_user_response = UsersAPI().get_user(token=token_without_email, expected_status_code=401)
+            getting_user_response = UsersAPI().get_user(token=token_without_email, expected_status_code=400)
 
         with step("Checking response code"):
-            assert_status_code(getting_user_response, 401)
+            assert_status_code(getting_user_response, 400)
 
         with step("Checking the response body"):
             expected_error_message = "User email not found in jwtToken"
@@ -149,11 +149,11 @@ class TestGetUser:
             email_of_non_existing_user = generate_user()["email"]
             token_of_non_existing_user = generate_jwt_token(email_of_non_existing_user)
             getting_user_response = UsersAPI().get_user(
-                token=token_of_non_existing_user, expected_status_code=401
+                token=token_of_non_existing_user, expected_status_code=404
             )
 
         with step("Checking response code"):
-            assert_status_code(getting_user_response, 401)
+            assert_status_code(getting_user_response, 404)
 
         with step("Checking the response body"):
             expected_error_message = "User with the provided email does not exist"

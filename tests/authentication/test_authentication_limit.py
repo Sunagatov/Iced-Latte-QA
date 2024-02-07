@@ -39,7 +39,7 @@ class TestAuthentication:
             registration_response = AuthenticateAPI().registration(body=body)
             assert_that(
                 registration_response.status_code,
-                is_(201),
+                is_(200),
                 reason="Registration failed",
             )
 

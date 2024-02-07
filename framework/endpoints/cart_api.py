@@ -52,7 +52,7 @@ class CartAPI:
         log_request(response)
         return response
 
-    def add_new_item_to_cart(self, token: str, items: list, expected_status_code: int = 200) -> Response:
+    def add_item_to_cart(self, token: str, items: list[object], expected_status_code: int = 200) -> Response:
         """Adding multiple products to cart and verifying if they are in the response
 
         Args:
