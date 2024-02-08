@@ -2,7 +2,7 @@ import pytest
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_length, has_key
 
-from configs import id_product_not_exist_in_BD_for_adding_to_cart
+from data_for_cart import id_product_not_exist_in_BD_for_adding_to_cart
 from framework.asserts.assert_cart import assert_added_product_not_in_api_response
 from framework.asserts.common import assert_content_type
 from framework.endpoints.cart_api import CartAPI

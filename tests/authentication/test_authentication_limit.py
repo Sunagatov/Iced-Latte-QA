@@ -1,9 +1,7 @@
 from allure import description, feature, step, title
-from hamcrest import assert_that, is_, none
+from hamcrest import assert_that, is_
 
 from framework.endpoints.authenticate_api import AuthenticateAPI
-from framework.steps.registration_steps import RegistrationSteps
-from framework.tools.generators import generate_string
 from framework.tools.matcher import is_timestamp_valid
 
 LIMIT_ATTEMPTS = 5
@@ -18,36 +16,22 @@ class TestAuthentication:
         f"WHEN a user enters authentication data incorrectly more than {LIMIT_ATTEMPTS} times, "
         "THEN the service blocks the user for authentication"
     )
-    def test_of_limitation_attempts(self):
-        with step("SetUp. Generation data of test user for registration"):
-            email = generate_string(length=2, additional_characters=["@te.st"])
-            first_name = generate_string(length=2)
-            last_name = generate_string(length=2)
-            password = generate_string(
-                length=8, additional_characters=["@1"]
-            ).capitalize()
-            invalid_password = password + "_invalid"
+    def test_of_limitation_attempts(self, create_authorized_user):
+        with step("Registration of user"):
+            user, token = create_authorized_user["user"], create_authorized_user["token"]
 
-            body = RegistrationSteps().data_for_sent(
-                email=email,
-                first_name=first_name,
-                last_name=last_name,
-                password=password,
-            )
-
-        with step("SetUp. Registration of test user"):
-            registration_response = AuthenticateAPI().registration(body=body)
-            assert_that(
-                registration_response.status_code,
-                is_(200),
-                reason="Registration failed",
-            )
-
+        with step("Authentication  user with incorrect email"):
+            data_post = {
+                "email": user["email"],
+                "password": user["password"] + "invalid",
+            }
+            email = data_post["email"]
+            incorrect_password = data_post["password"]
         with step("User authentication attempt allowed number of times"):
             for attempt in range(LIMIT_ATTEMPTS):
                 with step(f"Attempt {attempt}"):
                     response = AuthenticateAPI().authentication(
-                        email=email, password=invalid_password
+                        email=email, password=incorrect_password, expected_status_code=401
                     )
                     response_authentication = response.json()
                     assert_that(
@@ -70,12 +54,12 @@ class TestAuthentication:
                             response_authentication["timestamp"], TIMESTAMP_PATTERN
                         ),
                         reason=f"Timestamp '{response_authentication['timestamp']}' does not match "
-                        f"the expected format YYYY-MM-DD HH:MM:SS",
+                               f"the expected format YYYY-MM-DD HH:MM:SS",
                     )
 
         with step("Authentication attempt over the limit"):
             response = AuthenticateAPI().authentication(
-                email=email, password=invalid_password
+                email=email, password=incorrect_password, expected_status_code=401
             )
             response_locked_authentication = response.json()
             assert_that(response.status_code, is_(401), reason="Invalid status code")
@@ -97,5 +81,5 @@ class TestAuthentication:
                     response_locked_authentication["timestamp"], TIMESTAMP_PATTERN
                 ),
                 reason=f"Timestamp '{response_locked_authentication['timestamp']}' does not match "
-                f"the expected format YYYY-MM-DD HH:MM:SS",
+                       f"the expected format YYYY-MM-DD HH:MM:SS",
             )

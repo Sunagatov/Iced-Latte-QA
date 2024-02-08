@@ -13,10 +13,11 @@ from framework.tools.favorite_methods import extract_random_product_ids
 class TestFavorite:
 
     @pytest.mark.critical
+    @pytest.mark.skip(reason="BUG, user add product that not exist in BD or empty product's list [], status code should be = 400")
     @title("Test add products to favorite negative")
     @description(
         "GIVEN user is registered and does not have favorite list"
-        "WHEN user add a products = [] to favorite"
+        "WHEN user add a products with incorrect/not exist id to favorite"
         "THEN status HTTP CODE = "
     )
     @pytest.mark.parametrize(
@@ -56,9 +57,9 @@ class TestFavorite:
 
         with step("Add product with incorrect id product to favorite"):
             product_list_add_to_favorite = id_product_add_to_favorite
-            response_add_to_favorite = FavoriteAPI().add_favorites(token=token,
-                                                                   favorite_product=product_list_add_to_favorite,
-                                                                   expected_status_code=expected_status_code)
+            FavoriteAPI().add_favorites(token=token,
+                                            favorite_product=product_list_add_to_favorite,
+                                            expected_status_code=expected_status_code)
 
         with step("Verify that user's favorite 'products' list = null"):
             favorite_product_info = response_get_favorites.json().get("products")

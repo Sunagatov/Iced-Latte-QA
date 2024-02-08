@@ -1,7 +1,7 @@
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_key, has_length, equal_to
 
-from configs import data_for_not_exist_shopping_cart_item_id
+from data_for_cart import data_for_not_exist_shopping_cart_item_id
 from framework.asserts.common import assert_response_message, assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI

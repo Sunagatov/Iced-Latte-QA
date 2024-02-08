@@ -1,13 +1,9 @@
 from allure import description, step, title, feature
-from hamcrest import assert_that, has_length, equal_to, has_key
 
-from configs import data_for_adding_product_to_cart
 from framework.asserts.assert_cart import assert_deleted_item_ids_in_response
 from framework.asserts.common import assert_content_type
 from framework.endpoints.cart_api import CartAPI
-from framework.endpoints.users_api import UsersAPI
-from framework.tools.methods_to_cart import get_product_info, \
-    assert_product_to_add_matches_response, get_item_id
+from framework.tools.methods_to_cart import get_item_id
 
 
 @feature("Deleting item/items from cart ")

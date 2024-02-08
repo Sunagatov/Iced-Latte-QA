@@ -6,7 +6,8 @@ from pytest import fixture
 from assertpy import assert_that
 import pytest
 
-from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS, HOST, data_for_adding_product_to_cart
+from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS, HOST
+from data_for_cart import data_for_adding_product_to_cart
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
 from framework.queries.postgres_db import PostgresDB
