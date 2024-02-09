@@ -4,8 +4,10 @@ from hamcrest import assert_that, is_, is_not, empty, not_
 from psycopg2 import connect
 from pytest import fixture
 from assertpy import assert_that
+import pytest
 
-from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS, HOST, data_for_adding_product_to_cart
+from configs import DB_NAME, HOST_DB, PORT_DB, DB_USER, DB_PASS, HOST
+from data_for_cart import data_for_adding_product_to_cart
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
 from framework.queries.postgres_db import PostgresDB
@@ -13,9 +15,13 @@ from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.tools.generators import generate_user, generate_user_data
 from framework.tools.logging_allure import log_request
 from framework.asserts.common import assert_response_message, assert_content_type
-from framework.tools.methods_to_cart import assert_compare_product_to_add_with_response, \
+from framework.tools.methods_to_cart import assert_product_to_add_matches_response,\
     get_product_info, get_item_id
 from framework.tools.class_email import Email
+from framework.endpoints.product_api import ProductAPI
+from framework.tools.favorite_methods import extract_random_product_ids
+from framework.endpoints.favorite_api import FavoriteAPI
+from framework.asserts.assert_favorite import assert_added_product_in_favorites
 # Connection configuration
 PostgresDB.dbname = DB_NAME
 PostgresDB.host = HOST_DB
@@ -147,7 +153,7 @@ def creating_and_adding_product_to_shopping_cart(create_authorized_user):
         items_to_add = data_for_adding_product_to_cart
 
     with step("Adding new product to a shopping cart "):
-        CartAPI().add_new_item_to_cart(token=token,
+        CartAPI().add_item_to_cart(token=token,
                                        items=items_to_add)
 
     with step("Checking: 1. The shopping cart created under new user. 2.Added products are in a shopping cart"):
@@ -156,7 +162,7 @@ def creating_and_adding_product_to_shopping_cart(create_authorized_user):
         assert_that(expected_user_id_in_cart, 'Expected user ID does not match.').is_equal_to(
             new_user_id)
         product_list_after_added = get_product_info(response=response_get_cart_after_added)
-        assert_compare_product_to_add_with_response(items_to_add, product_list_after_added)
+        assert_product_to_add_matches_response(items_to_add, product_list_after_added)
         assert_content_type(response_get_cart, "application/json")
 
         yield token, new_user_id, response_get_cart_after_added
@@ -226,3 +232,23 @@ def registration_user_with_email(request):
 
         with step("Deleting user"):
             UsersAPI().delete_user(token=token_after_confirm)
+
+@pytest.fixture
+def product_quantity(request):
+    return request.param
+
+@fixture(scope='function')
+def add_product_to_favorite_list(create_authorized_user, product_quantity):
+     with step("Registration of user"):
+            user, token = create_authorized_user["user"], create_authorized_user["token"]
+
+     with step("Getting all products via API"):
+         response_get_product = ProductAPI().get_all()
+
+     with step("Select and ddd random products to favorite"):
+         product_list_to_favorite = extract_random_product_ids(response_get_product, product_quantity=product_quantity)
+         response_add_to_favorite = FavoriteAPI().add_favorites(token=token,
+                                                      favorite_product=product_list_to_favorite)
+         assert_added_product_in_favorites(response_add_to_favorite, product_list_to_favorite)
+
+     yield token, product_list_to_favorite

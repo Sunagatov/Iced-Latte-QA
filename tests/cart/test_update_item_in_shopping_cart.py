@@ -1,11 +1,8 @@
 from allure import description, step, title, feature
-from hamcrest import assert_that, is_, equal_to
+from hamcrest import assert_that, equal_to
 
-from configs import data_for_not_exist_shopping_cart_item_id, data_for_adding_product_to_cart
-from framework.asserts.common import assert_response_message, assert_content_type
 from framework.endpoints.cart_api import CartAPI
-from framework.tools.methods_to_cart import assert_compare_product_to_add_with_response, \
-    get_product_info, extract_random_item_detail, get_quantity_specific_cart_item
+from framework.tools.methods_to_cart import extract_random_item_detail, get_quantity_specific_cart_item
 
 
 @feature("Updating item quantity in cart ")

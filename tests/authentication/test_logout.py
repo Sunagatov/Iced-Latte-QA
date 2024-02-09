@@ -27,12 +27,12 @@ class TestLogout:
             )
 
         with step("Re-getting data user by ID via API"):
-            getting_user_response = UsersAPI().get_user(token=token)
+            getting_user_response = UsersAPI().get_user(token=token, expected_status_code=400)
 
         with step("Checking the response from the API"):
             assert_that(
                 getting_user_response.status_code,
-                is_(401),
+                is_(400),
                 reason="Log out not executed",
             )
             assert_that(

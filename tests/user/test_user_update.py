@@ -59,7 +59,6 @@ class TestUpdateUser:
             updating_user_response = UsersAPI().update_user(
                 token=token, user_data=user_data_to_update
             )
-
         with step("Checking the response code"):
             assert_status_code(updating_user_response, 200)
 

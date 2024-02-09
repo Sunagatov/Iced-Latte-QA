@@ -11,9 +11,12 @@ def get_product_info(response) -> List[Dict]:
     Args:
        response: The JSON response.
     """
-    response_data = response.json()
-    extracted_products = []
+    try:
+        response_data = response.json()
+    except ValueError as e:
+        raise AssertionError(f"Response is not in valid JSON format: {e}") from e
 
+    extracted_products = []
     for item in response_data["items"]:
         product = item["productInfo"]
         product_info = {
@@ -25,7 +28,7 @@ def get_product_info(response) -> List[Dict]:
     return extracted_products
 
 
-def assert_compare_product_to_add_with_response(add_product: List[Dict], expected_product: List[Dict]):
+def assert_product_to_add_matches_response(add_product: List[Dict], expected_product: List[Dict]):
     """ Assertion that product were added to the shopping cart
 
     Args:

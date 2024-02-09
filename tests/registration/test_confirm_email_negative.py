@@ -44,8 +44,8 @@ class TestConfirmationEmail:
             ),
         ],
     )
-    def test_confirmation_email_for_registration_with_empty_code(self, code, expected_status_code,
-                                                                 expected_message_part):
+    def test_confirmation_email_for_registration_with_empty_and_invalid_format_code(self, code, expected_status_code,
+                                                                                    expected_message_part):
         with step("Confirm email for registration with empty code"):
             response_confirmation = AuthenticateAPI().confirmation_email(code=code, expected_status_code=400)
 
@@ -75,4 +75,3 @@ class TestConfirmationEmail:
                                                                          expected_status_code=400)
             expected_message = "Incorrect token"
             assert_response_message(response=response_confirmation, expected_message=expected_message)
-

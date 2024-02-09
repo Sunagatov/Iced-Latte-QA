@@ -1,7 +1,7 @@
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_key, has_length, equal_to
 
-from configs import data_for_not_exist_shopping_cart_item_id
+from data_for_cart import data_for_not_exist_shopping_cart_item_id
 from framework.asserts.common import assert_response_message, assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
@@ -41,4 +41,30 @@ class TestCart:
             actual_item_in_cart = get_quantity_specific_cart_item(response_get_cart,
                                                                   item_id_to_update)
             assert_that(item_quantity_before_update, equal_to(actual_item_in_cart))
+
+    @title("Test updating NOT existing item quantity in user's shopping cart")
+    @description(
+        "GIVEN user is registered and have shopping cart"
+        "WHEN user try to update not exist item's quantity in the shopping cart"
+        "THEN status HTTP CODE = 404 and response body that contain appropriate error message returns"
+    )
+    def test_updating_not_exist_item_in_cart(self, creating_and_adding_product_to_shopping_cart):
+        with step("Registration new user, and add product to the shopping cart"
+                  "Getting info about user and user's shopping cart "):
+            token, new_user_id, response_get_cart_after_added = creating_and_adding_product_to_shopping_cart
+
+        with step("Update quantity of product"):
+            data_for_update_not_exist_item = data_for_not_exist_shopping_cart_item_id
+            shopping_cart_item_id = data_for_update_not_exist_item["shoppingCartItemId"]
+            response_after_update = CartAPI().update_quantity_product(token=token,
+                                                                      item_id=data_for_update_not_exist_item[
+                                                                          "shoppingCartItemId"],
+                                                                      item_quantity=data_for_update_not_exist_item[
+                                                                          "productQuantityChange"],
+                                                                      expected_status_code=404)
+
+        with step("Checking the response body and the Content-Type"):
+            expected_message_after_update = f"The shopping cart item with shoppingCartItemId = {shopping_cart_item_id} is not found."
+            assert_response_message(response_after_update, expected_message_after_update)
+            assert_content_type(response_after_update, "application/json")
 
