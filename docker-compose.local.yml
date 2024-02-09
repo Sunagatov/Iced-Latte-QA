@@ -29,6 +29,12 @@ services:
       MINIO_HOST: http://iced-latte-minio-qa
       MINIO_PORT: 9000
       MINIO_DEFAULT_PRODUCT_IMAGES_PATH: ./products
+      AWS_DEFAULT_PRODUCT_IMAGES_PATH: ./products
+      AWS_ACCESS_KEY: vbfgngfdndgndgndgndgndgndgndg
+      AWS_SECRET_KEY: vbfgngfdndgndgndgndgndgndgndg
+      AWS_REGION: eu-west-1
+      AWS_PRODUCT_BUCKET: products
+      AWS_USER_BUCKET: users
     ports:
       - '8083:8083'
       - '5005:5005'
