@@ -3,7 +3,7 @@ from allure import description, step, title, feature
 from allure import severity
 from hamcrest import assert_that, is_, is_not, empty
 
-from configs import firstName, lastName, password, email, email_iced_late, imap_server, email_address_to_connect, \
+from data_for_auth import firstName, lastName, password, email, email_iced_late, imap_server, email_address_to_connect, \
     gmail_password
 from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.endpoints.users_api import UsersAPI

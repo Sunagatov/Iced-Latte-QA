@@ -1,0 +1,8 @@
+firstName = 'TEST_NAME'
+lastName = 'TEST_LASTNAME'
+password = 'TEST_PASSWORD'
+email = 'TEST_EMAIL@test.com'
+imap_server = 'IMAP_SERVER'
+email_address_to_connect = 'test@gmail.com'
+gmail_password = 'testGmail'
+email_iced_late = 'iced.latte@gmail.com'

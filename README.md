@@ -13,6 +13,25 @@ DB_PASS = '<password for connect to database>'
 DEFAULT_PASSWORD = '<default password for test users>'
 JWT_SECRET = '<default secret for JWT>'
 ```
+## Start Local Iced-Latte Backend
+
+```sh
+./start_be.sh [<commit_hash>]
+```
+
+> Notes: 
+> * optional `commit_hash` is a hash of a commit from `development` branch, default is the latest
+> * it might be necessary to make script executable before the first run `chmod +x ./start_be.sh`
+> * the script will pull the specified version of BE image and start BE, Postgres and Minio
+> * periodically clean up the system by running [`docker rm`](https://docs.docker.com/engine/reference/commandline/container_rm/)
+
+Swagger will be available here [http://localhost:8083/api/docs/swagger-ui/index.html](http://localhost:8083/api/docs/swagger-ui/index.html).
+
+To check the logs use:
+
+```sh
+docker-compose -f docker-compose.local.yml logs --tail 500
+```
 
 ## Report
 (!) BE SURE TO INSTALL ALLURE -> https://allurereport.org/docs/gettingstarted/installation/
