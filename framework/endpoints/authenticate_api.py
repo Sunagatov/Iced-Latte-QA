@@ -82,3 +82,20 @@ class AuthenticateAPI:
         log_request(response)
 
         return response
+
+    def refresh_token(self, token: str, expected_status_code: int = 200) -> Response:
+        """Endpoint for authentication of user
+
+        Args:
+            expected_status_code: expected http status code from response
+            token: bearer token
+        """
+
+        path = self.url + "/refresh"
+        headers = self.headers
+        headers["Authorization"] = f"Bearer {token}"
+        response = requests.post(url=path, headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
+        return response

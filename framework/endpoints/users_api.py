@@ -39,6 +39,7 @@ class UsersAPI:
         response = requests.delete(headers=headers, url=self.url)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
+        return response
 
     def update_user(self, token: str = "", user_data: dict = None) -> Response:
         """Updating user info
