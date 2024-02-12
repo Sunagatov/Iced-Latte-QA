@@ -57,9 +57,8 @@ class TestFavorite:
 
         with step("Add product with incorrect id product to favorite"):
             product_list_add_to_favorite = id_product_add_to_favorite
-            FavoriteAPI().add_favorites(token=token,
-                                            favorite_product=product_list_add_to_favorite,
-                                            expected_status_code=expected_status_code)
+            FavoriteAPI().add_favorites(token=token, favorite_product=product_list_add_to_favorite,
+                                                     expected_status_code=expected_status_code)
 
         with step("Verify that user's favorite 'products' list = null"):
             favorite_product_info = response_get_favorites.json().get("products")

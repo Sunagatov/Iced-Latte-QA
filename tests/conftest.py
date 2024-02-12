@@ -101,8 +101,9 @@ def create_authorized_user(postgres):
             email=user_to_create["email"], password=user_to_create["password"]
         )
         token = authentication_response.json()["token"]
+        refresh_token = authentication_response.json()["refreshToken"]
 
-    yield {"user": user_to_create, "token": token}
+    yield {"user": user_to_create, "token": token, "refreshToken":refresh_token}
 
     with step("Removing user from DB"):
         postgres.delete_user(user_to_create["id"])
