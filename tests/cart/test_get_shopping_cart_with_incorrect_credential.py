@@ -115,7 +115,6 @@ class TestGetShoppingCart:
         with step("Getting information about shopping cart"):
             email_of_non_existing_user = generate_user()["email"]
             token_of_non_existing_user = generate_jwt_token(email_of_non_existing_user)
-            print(token_of_non_existing_user)
             response_get_cart = CartAPI().get_user_cart(token=token_of_non_existing_user, expected_status_code=404)
 
         with step("Checking response code and Content Type"):
