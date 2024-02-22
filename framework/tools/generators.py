@@ -155,3 +155,18 @@ def generate_user_data(
         "password": generate_password(password_length),
         "email": email,
     }
+
+
+def generate_numeric_password(length: int) -> str:
+    """ Generate a numeric password.
+
+    Parameters:
+    - length: int, the length of the password to generate.
+
+    Returns:
+    - A string representing the generated password.
+    """
+
+    return ''.join(
+        str(random.randint(0, 9)) for _ in range(length)
+    )

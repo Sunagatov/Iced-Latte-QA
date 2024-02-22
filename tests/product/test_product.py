@@ -9,10 +9,6 @@ from framework.endpoints.product_api import ProductAPI
 
 
 @feature("Getting product info by ID")
-@link(
-    url="https://github.com/Sunagatov/Online-Store/wiki/API-Specification-for-Product",
-    name="Description of the tested functionality",
-)
 class TestProduct:
     @title("Getting product info by ID not authorized")
     @description(
@@ -38,7 +34,7 @@ class TestProduct:
             non_exist_id = str(uuid.uuid4())
 
         with step(
-            f'Getting product info by non-existent product ID via API "{non_exist_id}"'
+                f'Getting product info by non-existent product ID via API "{non_exist_id}"'
         ):
             data = ProductAPI().get_by_id(_id=non_exist_id)
 

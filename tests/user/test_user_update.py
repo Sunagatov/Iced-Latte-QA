@@ -4,7 +4,7 @@ from hamcrest import assert_that, is_
 from framework.asserts.common import (
     assert_status_code,
     assert_content_type,
-    assert_response_message,
+    assert_response_message, assert_message_in_response,
 )
 from framework.asserts.user_asserts import assert_update_user_data_matches
 from framework.endpoints.users_api import UsersAPI
@@ -14,14 +14,16 @@ import pytest
 
 @feature("Update user's information")
 class TestUpdateUser:
+    @pytest.mark.skip(reason="Email is not updated after request. link to bug - "
+                             "https://trello.com/c/WB6FZG8a/4-%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-email-%D0%BD%D0%B5-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82")
     @title("Updating User Information")
     @description(
         "GIVEN the user is logged in, "
-        "WHEN the user sends a request to update their own information, "
+        "WHEN the user sends a request to update their own information - email  "
         "THEN the response code is 200 and the response body contains the current user's data."
     )
-    def test_update_user_info(self, create_authorized_user):
-        token = create_authorized_user["token"]
+    def test_update_user_email(self, create_authorized_user):
+        token, user = create_authorized_user["token"], create_authorized_user["user"]
 
         with step("Generating new user data"):
             user_data_to_update = generate_user()
@@ -41,33 +43,6 @@ class TestUpdateUser:
             assert_update_user_data_matches(
                 updating_user_response.json(), user_data_to_update
             )
-
-    @pytest.mark.parametrize("data", ["id", "email"])
-    @title("Updating User's Email and ID is ignored")
-    @description(
-        "GIVEN the user is logged in, "
-        "WHEN the user sends a request to update their own email and id, "
-        "THEN the response code is 200 and the response body contains the current user's email and id."
-    )
-    def test_ignored_fields_on_update(self, create_authorized_user, data):
-        token = create_authorized_user["token"]
-
-        with step("Generating new user data"):
-            user_data_to_update = generate_user()
-
-        with step("Updating user info via API"):
-            updating_user_response = UsersAPI().update_user(
-                token=token, user_data=user_data_to_update
-            )
-        with step("Checking the response code"):
-            assert_status_code(updating_user_response, 200)
-
-        with step("Checking the response type of the body"):
-            assert_content_type(updating_user_response, "application/json")
-
-        with step("Checking the response "):
-            response = updating_user_response.json()
-            assert_that(response[data], is_(create_authorized_user["user"][data]))
 
     @title("Updating User's Own Address")
     @description(
@@ -100,19 +75,19 @@ class TestUpdateUser:
 
     @pytest.mark.parametrize(
         "first_name, last_name",
-        [("John", "Doe"), ("Anne-Marie", "O'Conner"), ("O'Brien", "Smith-Jones")],
+        [("John", "Doe"), ("Anne-Marie", "O'Conner"), ("O'Brien", "Smith-Jones"), ("Brien", "Smith Jones"),
+         ("Smith Jones", "Smith")],
     )
     def test_update_user_with_valid_names(
-        self, create_authorized_user, first_name, last_name
+            self, create_authorized_user, first_name, last_name
     ):
         token = create_authorized_user["token"]
 
         with step("Generating new user data"):
             # Include the last_name in the user data generation
             user_data_to_update = generate_user(
-                firstName=first_name, lastName=last_name
+                firstName=first_name, lastName=last_name, email=create_authorized_user["user"]["email"]
             )
-            print(user_data_to_update)
 
         with step("Updating user info via API"):
             updating_user_response = UsersAPI().update_user(
@@ -130,6 +105,59 @@ class TestUpdateUser:
             assert_update_user_data_matches(
                 updating_user_response.json(), user_data_to_update
             )
+
+    @pytest.mark.skip(
+        reason="Fields First Name and Last Name are not updated with valid length. link to bug - https://trello.com/c/0bWwMrXS/9-first-name-and-last-name-do-not-accept-length-55")
+    @pytest.mark.parametrize(
+        "first_name_length, last_name_length",
+        [
+            pytest.param(
+                2,
+                2,
+            ),
+            pytest.param(
+                3,
+                3,
+            ),
+            pytest.param(
+                64,
+                64,
+            ),
+            pytest.param(
+                128,
+                128,
+            ),
+            pytest.param(
+                127,
+                127,
+            ),
+        ],
+
+    )
+    def test_update_user_first_name_with_valid_length(
+            self,
+            create_authorized_user,
+            first_name_length,
+            last_name_length,
+
+    ):
+        token = create_authorized_user["token"]
+
+        with step("Generating new user data"):
+            user_data_to_update = generate_user(
+                first_name_length=first_name_length, last_name_length=last_name_length
+            )
+
+        with step("Updating user info via API"):
+            updating_user_response = UsersAPI().update_user(
+                token=token, user_data=user_data_to_update
+            )
+
+        with step("Checking the response code"):
+            assert_status_code(updating_user_response, 200)
+
+        with step("Checking the response type of the body"):
+            assert_content_type(updating_user_response, "application/json")
 
     @pytest.mark.parametrize(
         "first_name, last_name, expected_message",
@@ -155,8 +183,7 @@ class TestUpdateUser:
                 "Doe",
                 "First name can only contain letters",
                 marks=pytest.mark.xfail(
-                    reason="BUG: IL-240: API Update User - First Name Allows Non-Latin Characters, Contrary to "
-                    "Requirements"
+                    reason="BUG: IL-240: API Update User - First Name and Last Name Allows Non-Latin Characters, Contrary to Requirements"
                 ),
             ),
             pytest.param(
@@ -164,14 +191,13 @@ class TestUpdateUser:
                 "Smith123",
                 "Last name can only contain letters",
                 marks=pytest.mark.xfail(
-                    reason="BUG: IL-240: API Update User - First Name Allows Non-Latin Characters, Contrary to "
-                    "Requirements"
+                    reason="BUG: IL-240: API Update User - First Name and Last Name Allows Non-Latin Characters, Contrary to Requirements"
                 ),
             ),
         ],
     )
-    def test_update_user_with_invalid_first_name(
-        self, create_authorized_user, first_name, last_name, expected_message
+    def test_update_user_with_invalid_first_name_and_last_name(
+            self, create_authorized_user, first_name, last_name, expected_message
     ):
         token = create_authorized_user["token"]
 
@@ -234,11 +260,11 @@ class TestUpdateUser:
         ],
     )
     def test_update_user_first_name_length(
-        self,
-        create_authorized_user,
-        first_name_length,
-        last_name_length,
-        expected_message,
+            self,
+            create_authorized_user,
+            first_name_length,
+            last_name_length,
+            expected_message,
     ):
         token = create_authorized_user["token"]
 
@@ -261,9 +287,6 @@ class TestUpdateUser:
         with step("Checking the response message"):
             assert_response_message(updating_user_response, expected_message)
 
-    @pytest.mark.xfail(
-        reason="BUG: IL-234: API Update User - First Name Allows Non-Latin Characters, Contrary to "
-    )
     @title("Updating User's Wrong Birth Date")
     @description(
         "GIVEN the user is logged in, "
@@ -292,13 +315,12 @@ class TestUpdateUser:
             assert_that(updating_user_response.json()["error"], is_("Bad Request"))
 
     @pytest.mark.xfail(
-        reason="BUG: IL-241: API Update User - API Returns 401 Unauthorized Error with Misleading "
-        "Message for PUT Request with Empty Body"
+        reason="BUG:https://trello.com/c/7cPxzfaQ/4-update-users-info-format-error-message "
     )
     @title("Updating User's Birth Date with Empty Body")
     @description(
         "GIVEN the user is logged in, "
-        "WHEN the user sends a request to update their own birth date with empty body, "
+        "WHEN the user sends a request to update their info with empty body, "
         "THEN the response code is 400 and the response body contains the error message."
     )
     def test_update_user_with_empty_body(self, create_authorized_user):
@@ -315,3 +337,4 @@ class TestUpdateUser:
 
         with step("Checking the response message"):
             assert_response_message(updating_user_response, "Request body is empty")
+            assert_message_in_response(updating_user_response, "ErrorMessage: must not be null")

@@ -2,8 +2,8 @@ import pytest
 from allure import description, step, title, feature, severity
 from hamcrest import assert_that, not_, is_not, empty
 
-from data_for_auth import gmail_password, imap_server, email_address_to_connect
-from data_for_auth import password, firstName, lastName, email, email_iced_late
+from configs import gmail_password, imap_server, email_address_to_connect
+from configs import password, firstName, lastName, email, email_iced_late
 from framework.asserts.common import assert_content_type
 from framework.asserts.registration_asserts import check_mapping_api_to_db
 from framework.endpoints.authenticate_api import AuthenticateAPI
@@ -11,7 +11,7 @@ from framework.endpoints.users_api import UsersAPI
 
 from framework.tools.class_email import Email
 
-
+#
 # Connection configuration
 # PostgresDB.dbname = DB_NAME
 # PostgresDB.host = HOST_DB

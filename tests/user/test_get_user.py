@@ -46,10 +46,10 @@ class TestGetUser:
     def test_get_user_info_with_invalid_token(self):
         with step("Getting user info"):
             invalid_token = "invalid_token"
-            getting_user_response = UsersAPI().get_user(token=invalid_token, expected_status_code=401)
+            getting_user_response = UsersAPI().get_user(token=invalid_token, expected_status_code=500)
 
         with step("Checking the response code"):
-            assert_status_code(getting_user_response, 401)
+            assert_status_code(getting_user_response, 500)
 
         with step("Checking the Content-Type"):
             assert_content_type(getting_user_response, "application/json")

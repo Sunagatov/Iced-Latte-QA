@@ -28,7 +28,7 @@ def assert_update_user_data_matches(response_data: dict, expected_user: dict) ->
         AssertionError: If any of the assertions fail.
     """
 
-    fields = ["firstName", "lastName", "birthDate", "phoneNumber"]
+    fields = ["firstName", "lastName", "birthDate", "phoneNumber", "email"]
 
     assert_partial_match(expected_user, response_data, fields)
 

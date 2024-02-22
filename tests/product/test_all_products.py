@@ -9,10 +9,6 @@ from framework.endpoints.product_api import ProductAPI
 
 
 @feature("Getting a list of all products")
-@link(
-    url="https://github.com/Sunagatov/Online-Store/wiki/API-Specification-for-Product",
-    name="Description of the tested functionality",
-)
 class TestAllProducts:
     @pytest.mark.skip(reason="Need to fix the bug in the test with lengths comparison")
     @title("Getting all products not authorized")
