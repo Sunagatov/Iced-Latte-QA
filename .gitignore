@@ -71,4 +71,4 @@ allure_report
 # Config
 configs.py
 tests/__pycache__/
-data_for_auth.py
+data/data_for_auth.py

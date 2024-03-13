@@ -1,7 +1,7 @@
 from allure import description, step, title, feature
 from hamcrest import assert_that, equal_to
 
-from data_for_cart import data_for_not_exist_shopping_cart_item_id
+from data.data_for_cart import data_for_not_exist_shopping_cart_item_id
 from framework.asserts.common import assert_response_message, assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.tools.methods_to_cart import extract_random_item_detail, get_quantity_specific_cart_item

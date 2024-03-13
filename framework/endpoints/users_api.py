@@ -1,4 +1,6 @@
 import json
+import os
+from pathlib import Path
 
 import requests
 from requests import Response
@@ -79,3 +81,43 @@ class UsersAPI:
         log_request(response)
 
         return response
+
+    def get_user_avatar(self, token: str = "", expected_status_code: int = 200) -> Response:
+        """Getting info about user's avatar via API
+
+        Args:
+            expected_status_code: Expected HTTP code from Response
+            token:      JWT token for authorization of request
+        """
+        headers = self.headers
+        path = f"{self.url}/avatar"
+        headers["Authorization"] = f"Bearer {token}"
+        response = requests.get(headers=headers, url=path)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
+        return response
+
+    def post_user_avatar(self, token: str, image_path: str, expected_status_code: int = 200) -> Response:
+        """Posts a user's avatar image to the API
+
+         Args:
+            token: JWT token for authorization of the request
+            image_path: Path to the image file to be uploaded
+            expected_status_code: Expected HTTP status code from the response
+        """
+        headers = self.headers
+        path = f"{self.url}/avatar"
+        headers["Authorization"] = f"Bearer {token}"
+
+        # Open the image file in binary mode
+        with open(image_path, 'rb') as image_file:
+
+            files = {"file": (os.path.basename(image_path), image_file, 'multipart/form-data')}
+            response = requests.post(url=path, headers=headers, files=files)
+
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)  # Make sure you have a function to log the request and response details
+
+        return response
+

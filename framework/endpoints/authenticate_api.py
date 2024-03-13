@@ -99,3 +99,20 @@ class AuthenticateAPI:
         log_request(response)
 
         return response
+
+    def forgot_password(self, email: str, expected_status_code: int = 200) -> Response:
+        """Endpoint for authentication of user
+
+        Args:
+            expected_status_code: expected http status code from response
+            email: email for reset password
+        """
+        data = {
+            "email": email
+        }
+        path = self.url + "/password/forgot"
+        response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
+        return response

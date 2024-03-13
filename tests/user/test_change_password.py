@@ -12,7 +12,7 @@ from framework.tools.generators import generate_password, generate_string, gener
 class TestChangePassword:
     @pytest.mark.critical
     @severity(severity_level="MAJOR")
-    @title("Test change user password")
+    @title("Test change user password with valid length")
     @description(
         "GIVEN user is registered"
         "WHEN user sends a request to change password with length of password according to requirement"

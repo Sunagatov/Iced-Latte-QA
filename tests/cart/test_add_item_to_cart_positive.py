@@ -1,7 +1,7 @@
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_length, equal_to, has_key
 
-from data_for_cart import data_for_adding_product_to_cart
+from data.data_for_cart import data_for_adding_product_to_cart
 from framework.asserts.common import assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
