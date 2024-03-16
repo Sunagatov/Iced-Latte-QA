@@ -35,7 +35,6 @@ class TestCart:
 
             response_add_to_cart = CartAPI().add_item_to_cart(token=token,
                                                               items=product_add_to_cart)
-            print(response_add_to_cart.json())
 
         with step("Verify product to add in response after API request"):
             product_list_in_response_add_to_cart = get_product_info(response=response_add_to_cart)
