@@ -1,0 +1,12 @@
+[
+  "example.domain.com",
+  "usernamedomain.com",
+  "username@",
+  "john doe@example.com",
+  "user!name@example.com",
+  "@domain.com",
+  "username@example",
+  "user@name@example.com",
+  ".username@example.com",
+  "username@example_domain.com"
+]

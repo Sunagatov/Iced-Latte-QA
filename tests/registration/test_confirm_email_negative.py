@@ -1,11 +1,10 @@
 import pytest
 from allure import description, step, title, feature, severity
 
-from data_for_auth import firstName, lastName, password, email, imap_server, email_address_to_connect, gmail_password, \
-    email_iced_late
-from framework.endpoints.authenticate_api import AuthenticateAPI
+from configs import email_iced_late, imap_server, email_address_to_connect, gmail_password, firstName, lastName, \
+    password
 from framework.asserts.common import assert_message_in_response, assert_response_message
-from tests.conftest import UserRegistrationParams
+from framework.endpoints.authenticate_api import AuthenticateAPI
 
 
 @feature("Confirm email for registration with code, negative scenario")
@@ -57,15 +56,18 @@ class TestConfirmationEmail:
         "WHEN the user submits for confirmation email already used code"
         "THEN status HTTP CODE = 404 and error message"
     )
-    @pytest.mark.parametrize('registration_user_with_email',
-                             [UserRegistrationParams(first_name=firstName, last_name=lastName, password=password,
-                                                     email=email, email_box="Inbox", key='from_',
-                                                     value=email_iced_late, imap_server=imap_server,
-                                                     email_address=email_address_to_connect,
-                                                     gmail_password=gmail_password)], indirect=True)
-    def test_confirmation_email_with_used_code(self, registration_user_with_email):
+    @pytest.mark.parametrize('registration_and_cleanup_user_through_api', [{
+        'firstName': firstName,
+        'lastName': lastName,
+        'password': password,
+        'email_iced_late': email_iced_late,
+        'imap_server': imap_server,
+        'email_address_to_connect': email_address_to_connect,
+        'gmail_password': gmail_password
+    }], indirect=True)
+    def test_confirmation_email_with_used_code(self, registration_and_cleanup_user_through_api):
         with step("Registration user"):
-            _, _, code_from_email = registration_user_with_email
+            code_from_email = registration_and_cleanup_user_through_api['code']
 
         with step("Confirm email for registration with already used code"):
             code_already_used = code_from_email

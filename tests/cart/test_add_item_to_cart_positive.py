@@ -1,7 +1,7 @@
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_length, equal_to, has_key
 
-from data_for_cart import data_for_adding_product_to_cart
+from data.data_for_cart import data_for_adding_product_to_cart
 from framework.asserts.common import assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
@@ -35,7 +35,6 @@ class TestCart:
 
             response_add_to_cart = CartAPI().add_item_to_cart(token=token,
                                                               items=product_add_to_cart)
-            print(response_add_to_cart.json())
 
         with step("Verify product to add in response after API request"):
             product_list_in_response_add_to_cart = get_product_info(response=response_add_to_cart)

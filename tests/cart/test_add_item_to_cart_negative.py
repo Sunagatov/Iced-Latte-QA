@@ -2,12 +2,11 @@ import pytest
 from allure import description, step, title, feature
 from hamcrest import assert_that, has_length, has_key
 
-from data_for_cart import id_product_not_exist_in_BD_for_adding_to_cart
+from data.data_for_cart import id_product_not_exist_in_BD_for_adding_to_cart
 from framework.asserts.assert_cart import assert_added_product_not_in_api_response
 from framework.asserts.common import assert_content_type
 from framework.endpoints.cart_api import CartAPI
 from framework.endpoints.users_api import UsersAPI
-from framework.tools.methods_to_cart import get_product_info, assert_product_to_add_matches_response
 
 
 @feature("Adding item(product) to cart ")

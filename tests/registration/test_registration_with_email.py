@@ -2,7 +2,7 @@ import pytest
 from allure import description, step, title, feature, severity
 from hamcrest import assert_that, not_, is_not, empty
 
-from configs import gmail_password, imap_server, email_address_to_connect
+from configs import gmail_password, imap_server, email_address_to_connect,EMAIL_DOMAIN, EMAIL_LOCAL_PART
 from configs import password, firstName, lastName, email, email_iced_late
 from framework.asserts.common import assert_content_type
 from framework.asserts.registration_asserts import check_mapping_api_to_db
@@ -10,6 +10,8 @@ from framework.endpoints.authenticate_api import AuthenticateAPI
 from framework.endpoints.users_api import UsersAPI
 
 from framework.tools.class_email import Email
+from framework.tools.generators import generate_string, append_random_to_local_part_email
+
 
 #
 # Connection configuration
@@ -32,11 +34,13 @@ class TestAuthentication:
     )
     def test_registration(self, postgres):
         with step("Generation data for registration"):
+            email_random = append_random_to_local_part_email(domain=EMAIL_DOMAIN, email_local_part=EMAIL_LOCAL_PART,
+                                                             length_random_part=5)
             data_for_registration = {
                 "firstName": firstName,
                 "lastName": lastName,
                 "password": password,
-                "email": email,
+                "email": email_random
             }
 
         with step("Registration new user"):

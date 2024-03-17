@@ -39,7 +39,7 @@ class Email:
                 messages = mailbox.fetch(criteria=A(**{key.lower(): value}), mark_seen=False, bulk=True)
                 for msg in messages:
                     email_time = msg.date.timestamp()
-                    if current_time - email_time <= 15:
+                    if current_time - email_time <= 13.5:
                         text = msg.text or ""
                         pattern = "\d{3}-\d{3}-\d{3}"
                         match = re.search(pattern, text)

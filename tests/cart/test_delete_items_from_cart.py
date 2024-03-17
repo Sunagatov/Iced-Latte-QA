@@ -43,8 +43,6 @@ class TestCart:
 
         with step("Generating data for delete one product from cart"):
             id_one_item_to_delete = [response_get_cart_after_added.json()["items"][0]["id"]]
-            print(id_one_item_to_delete)
-            id_one_item_to_delete1 = id_one_item_to_delete
 
         with step("Deleting item from cart"):
             response_delete_item = CartAPI().delete_item_from_cart(token=token,
@@ -52,4 +50,4 @@ class TestCart:
             assert_content_type(response_delete_item, "application/json")
 
         with step("Verify that deleted items do not exist in shopping cart"):
-            assert_deleted_item_ids_in_response(response_delete_item, id_one_item_to_delete1)
+            assert_deleted_item_ids_in_response(response_delete_item, id_one_item_to_delete)

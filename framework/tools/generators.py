@@ -170,3 +170,15 @@ def generate_numeric_password(length: int) -> str:
     return ''.join(
         str(random.randint(0, 9)) for _ in range(length)
     )
+
+
+def append_random_to_local_part_email(domain: str = "", email_local_part: str = "", length_random_part: int = 5):
+    """Generates a random email address based on the existing prefix and domain email.
+
+    Args:
+        length_random_part: Length of the random part of the email address.
+        email_local_part: Prefix of the existing email address.
+        domain: Domain of the existing email address.
+    """
+    random_part = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_random_part))
+    return f"{email_local_part}{random_part}@{domain}"
