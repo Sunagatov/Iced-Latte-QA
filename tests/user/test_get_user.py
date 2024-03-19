@@ -16,7 +16,9 @@ from framework.tools.generators import generate_jwt_token
 
 @feature("Getting user info")
 class TestGetUser:
-    @pytest.mark.skip(reason="AssertionError: Field 'avatarLink' mismatch: Expected 'None', Found 'default file")
+    @pytest.mark.skip(
+        reason="AssertionError: Field 'avatarLink' mismatch: Expected 'None', Found 'default file"
+    )
     @title("Getting User's Own Information")
     @description(
         "GIVEN the user is logged in, "
@@ -46,7 +48,9 @@ class TestGetUser:
     def test_get_user_info_with_invalid_token(self):
         with step("Getting user info"):
             invalid_token = "invalid_token"
-            getting_user_response = UsersAPI().get_user(token=invalid_token, expected_status_code=500)
+            getting_user_response = UsersAPI().get_user(
+                token=invalid_token, expected_status_code=500
+            )
 
         with step("Checking the response code"):
             assert_status_code(getting_user_response, 500)
@@ -67,7 +71,9 @@ class TestGetUser:
     def test_getting_user_with_expired_token(self, create_user):
         with step("Getting user info"):
             expired_token = generate_jwt_token(email=create_user["email"], expired=True)
-            getting_user_response = UsersAPI().get_user(token=expired_token, expected_status_code=401)
+            getting_user_response = UsersAPI().get_user(
+                token=expired_token, expected_status_code=401
+            )
 
         with step("Checking the response code"):
             assert_status_code(getting_user_response, 401)
@@ -111,7 +117,9 @@ class TestGetUser:
             )
 
         with step("Getting user info"):
-            getting_user_response = UsersAPI().get_user(token=token, expected_status_code=400)
+            getting_user_response = UsersAPI().get_user(
+                token=token, expected_status_code=400
+            )
 
         with step("Checking response code"):
             assert_status_code(getting_user_response, 400)
@@ -129,7 +137,9 @@ class TestGetUser:
     def test_getting_user_with_token_not_containing_email(self):
         with step("Getting user info"):
             token_without_email = generate_jwt_token()
-            getting_user_response = UsersAPI().get_user(token=token_without_email, expected_status_code=400)
+            getting_user_response = UsersAPI().get_user(
+                token=token_without_email, expected_status_code=400
+            )
 
         with step("Checking response code"):
             assert_status_code(getting_user_response, 400)

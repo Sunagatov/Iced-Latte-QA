@@ -27,7 +27,9 @@ class TestLogout:
             )
 
         with step("Re-getting data user by ID via API"):
-            getting_user_response = UsersAPI().get_user(token=token, expected_status_code=400)
+            getting_user_response = UsersAPI().get_user(
+                token=token, expected_status_code=400
+            )
 
         with step("Checking the response from the API"):
             assert_that(

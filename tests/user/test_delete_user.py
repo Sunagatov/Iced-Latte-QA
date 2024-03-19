@@ -20,7 +20,10 @@ class TestDeleteUser:
     )
     def test_delete_user(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Delete user"):
             UsersAPI().delete_user(token=token, expected_status_code=200)
@@ -32,5 +35,5 @@ class TestDeleteUser:
 
         with step("Verify that user is not in BD"):
             result = PostgresDB().select_user_by_email(email=user["email"])
-            count = result[0]['count']
+            count = result[0]["count"]
             assert_that(count, equal_to(0))

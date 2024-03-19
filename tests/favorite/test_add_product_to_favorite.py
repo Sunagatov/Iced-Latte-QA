@@ -20,7 +20,10 @@ class TestFavorite:
     )
     def test_adding_products_to_favorite(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Verify that user does not have favorite list"):
             response_get_favorites = FavoriteAPI().get_favorites(token=token)
@@ -31,19 +34,27 @@ class TestFavorite:
             response_get_product = ProductAPI().get_all()
 
         with step("Select and add random products to favorite"):
-            product_list_add_to_favorite = extract_random_product_ids(response_get_product, product_quantity=4)
-            response_add_to_favorite = FavoriteAPI().add_favorites(token=token,
-                                                                   favorite_product=product_list_add_to_favorite)
+            product_list_add_to_favorite = extract_random_product_ids(
+                response_get_product, product_quantity=4
+            )
+            response_add_to_favorite = FavoriteAPI().add_favorites(
+                token=token, favorite_product=product_list_add_to_favorite
+            )
 
         with step("Verify that response contain info about added products to favorite"):
-            assert_added_product_in_favorites(response_add_to_favorite, product_list_add_to_favorite)
+            assert_added_product_in_favorites(
+                response_add_to_favorite, product_list_add_to_favorite
+            )
 
         with step("Verify content-type"):
             assert_content_type(response_add_to_favorite, "application/json")
 
-        with step("Get info about favorite products after add products to favorite list "):
+        with step(
+            "Get info about favorite products after add products to favorite list "
+        ):
             response_get_favorites = FavoriteAPI().get_favorites(token=token)
 
         with step("Verify that response contain info about added products to favorite"):
-            assert_added_product_in_favorites(response_get_favorites, product_list_add_to_favorite)
-
+            assert_added_product_in_favorites(
+                response_get_favorites, product_list_add_to_favorite
+            )

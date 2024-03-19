@@ -27,7 +27,6 @@ class TestAuthentication:
                 " ",
                 400,
                 "Email is the mandatory attribute",
-
             ),
             pytest.param(
                 None,
@@ -35,9 +34,7 @@ class TestAuthentication:
                 400,
                 "Password is the mandatory attribute",
             ),
-            pytest.param(
-                " ", None, 400, "Email is the mandatory attribute"
-            ),
+            pytest.param(" ", None, 400, "Email is the mandatory attribute"),
         ],
     )
     def test_authentication_with_various_blank_inputs(
@@ -45,16 +42,22 @@ class TestAuthentication:
         email: str,
         password: str,
         expected_status_code: int,
-        expected_message_part: str, create_authorized_user
+        expected_message_part: str,
+        create_authorized_user,
     ):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
         with step("Preparation data for authentication request"):
             email = user["email"] if email is None else email
             password = user["password"] if password is None else password
 
         with step("Authentication user with given credentials"):
-            response = AuthenticateAPI().authentication(email=email, password=password, expected_status_code=400)
+            response = AuthenticateAPI().authentication(
+                email=email, password=password, expected_status_code=400
+            )
 
         with step(
             "Verify the response contains the expected part of message, http status code,and "
