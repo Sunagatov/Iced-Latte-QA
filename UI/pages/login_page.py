@@ -1,5 +1,5 @@
-from .base_page import BasePage
-from .locators import LoginPageLocators
+from base_page import BasePage
+from locators import LoginPageLocators
 
 
 class LoginPage(BasePage):
@@ -14,6 +14,3 @@ class LoginPage(BasePage):
         email_field.send_keys(email)
         password_field.send_keys(password)
         login_button.click()
-
-
-

@@ -1,17 +1,19 @@
 from pages.base_page import BasePage
 from pages.login_page import LoginPage
-from configs import link, first_name, last_name, email, password
+from pages.profile_page import ProfilePage
+from pages.edit_profile_page import EditProfilePage
+from configs import link, email, password, new_first_name
 
 
 from time import sleep
-from allure import description, step, title, feature, severity, story
+from allure import step, title, severity, story, severity_level
 
 
 @title("Test Change First Name")
 @story("Personal Account")
 # @allure.description("")
 # @allure.tag("")
-@severity(allure.severity_level.MAJOR)
+@severity(severity_level.CRITICAL)
 def test_user_can_change_first_name(browser):
     with step('Open main page'):
         page = BasePage(browser, link)
@@ -28,9 +30,10 @@ def test_user_can_change_first_name(browser):
         page = ProfilePage(browser, browser.current_url)
         page.go_to_edit_page()
     with step('Enter new First Name'):
+        page = EditProfilePage(browser, browser.current_url)
+        page.change_first_name(new_first_name)
+    with step('Click "Save Changes" button'):
+        page.save_change()
 
 
-
-
-
-    sleep(5)
+sleep(5)

@@ -1,6 +1,7 @@
 venv/
 # !!!
 venv_activate.bat
+.idea/
 
 # Allure
 allure_report/

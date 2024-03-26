@@ -27,4 +27,4 @@ class ProfilePageLocators:
 
 class EditProfilePageLocators:
     FIRST_NAME_FIELD = (By.ID, 'firstName')
-
+    SAVE_CHANGE_BUTTON = (By.CSS_SELECTOR, '[type="submit"]')
