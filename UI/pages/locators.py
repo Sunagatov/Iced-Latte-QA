@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 
 class BasePageLocators:
     LOGIN_LINK = (By.CSS_SELECTOR, '[href="/auth/login"]')
+    PROFILE_LINK = (By.CSS_SELECTOR, '[href="/profile"]')
 
 
 class LoginPageLocators:
@@ -18,3 +19,12 @@ class RegistrationPageLocators:
     EMAIL_FIELD = (By.ID, 'email')
     PASSWORD_FIELD = (By.ID, 'password')
     REGISTER_BUTTON = (By.CSS_SELECTOR, '[type="submit"]')
+
+
+class ProfilePageLocators:
+    EDIT_BUTTON = (By.LINK_TEXT, 'Edit')
+
+
+class EditProfilePageLocators:
+    FIRST_NAME_FIELD = (By.ID, 'firstName')
+

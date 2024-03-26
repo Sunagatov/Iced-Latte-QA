@@ -20,7 +20,15 @@ def test_user_can_change_first_name(browser):
         page.go_to_login_page()
     with step('Login existing user'):
         login_page = LoginPage(browser, browser.current_url)
-        login_page.login_existing_user()
+        login_page.login_existing_user(email, password)
+    with step('Go to profile page'):
+        page = BasePage(browser, browser.current_url)
+        page.go_to_profile_page()
+    with step('Click "Edit" button'):
+        page = ProfilePage(browser, browser.current_url)
+        page.go_to_edit_page()
+    with step('Enter new First Name'):
+
 
 
 
