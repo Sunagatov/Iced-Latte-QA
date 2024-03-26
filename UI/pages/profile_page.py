@@ -1,5 +1,5 @@
-from base_page import BasePage
-from locators import ProfilePageLocators
+from .base_page import BasePage
+from .locators import ProfilePageLocators
 
 
 class ProfilePage(BasePage):

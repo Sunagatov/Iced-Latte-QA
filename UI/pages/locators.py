@@ -22,7 +22,7 @@ class RegistrationPageLocators:
 
 
 class ProfilePageLocators:
-    EDIT_BUTTON = (By.LINK_TEXT, 'Edit')
+    EDIT_BUTTON = (By.XPATH, '/html/body/main/div/div/div[3]/div/button')
 
 
 class EditProfilePageLocators:
