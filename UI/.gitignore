@@ -1,0 +1,15 @@
+venv/
+# !!!
+venv_activate.bat
+
+# Allure
+allure_report/
+
+# Config
+# !!!
+configs.py
+
+__pycache__/
+tests/__pycache__/
+pages/__pycache__/
+data_for_auth.py
