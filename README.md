@@ -16,13 +16,22 @@ JWT_SECRET = '<default secret for JWT>'
 ## Start Local Iced-Latte Backend
 
 ```sh
-./start_be.sh [<commit_hash>]
+./start_be.sh
+```
+
+or
+
+```sh
+./start_be.sh [tag]
+# for example
+./start_be.sh development-bf1ba24
 ```
 
 > Notes: 
-> * optional `commit_hash` is a hash of a commit from `development` branch, default is the latest
+> * optional parameter is a tag from the Docker Hub for [BE image](https://hub.docker.com/r/zufarexplainedit/iced-latte-backend/tags), default is the latest tag
 > * it might be necessary to make script executable before the first run `chmod +x ./start_be.sh`
 > * the script will pull the specified version of BE image and start BE, Postgres and Minio
+> * if the tag on DockerHub is different from the latest commit on BE `development` branch, the script will print warning
 > * periodically clean up the system by running [`docker rm`](https://docs.docker.com/engine/reference/commandline/container_rm/)
 
 Swagger will be available here [http://localhost:8083/api/docs/swagger-ui/index.html](http://localhost:8083/api/docs/swagger-ui/index.html).
