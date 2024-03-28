@@ -29,16 +29,18 @@ def generate_string(length: int, additional_characters: list = None) -> str:
 
 
 def generate_user(
-        first_name_length: Optional[int] = None,
-        last_name_length: Optional[int] = None,
-        password: str = DEFAULT_PASSWORD,
-        with_address: bool = False,
-        **kwargs
+    first_name_length: Optional[int] = None,
+    last_name_length: Optional[int] = None,
+    password: str = DEFAULT_PASSWORD,
+    with_address: bool = False,
+    email: Optional[str] = None,
+    **kwargs,
 ):
     """
     Generate a user with customizable attributes.
 
     Args:
+        email: specific email for user.
         first_name_length: Optional[int] - Length of the first name.
         last_name_length: Optional[int] - Length of the last name.
         password: password for user.
@@ -58,7 +60,7 @@ def generate_user(
         "lastName": generate_string(last_name_length)
         if last_name_length is not None
         else faker.last_name(),
-        "email": faker.email(),
+        "email": email if email is not None else faker.email(),
         "birthDate": faker.date_of_birth().strftime("%Y-%m-%d"),
         "phoneNumber": faker.phone_number(),
         "stripeCustomerToken": faker.uuid4(),
@@ -121,19 +123,22 @@ def generate_password(length: int) -> str:
     if all(char not in digits for char in password):
         random_index = random.randint(0, length - 1)
         password = (
-                password[:random_index] + random.choice(digits) + password[random_index:]
+            password[:random_index] + random.choice(digits) + password[random_index:]
         )
     if all(char not in letters for char in password):
         random_index = random.randint(0, length - 1)
         password = (
-                password[:random_index] + random.choice(letters) + password[random_index:]
+            password[:random_index] + random.choice(letters) + password[random_index:]
         )
 
     return password
 
 
 def generate_user_data(
-        password_length: int, first_name_length: int, last_name_length: int, email: Any = faker.email()
+    password_length: int,
+    first_name_length: int,
+    last_name_length: int,
+    email: Any = faker.email(),
 ) -> dict:
     """Function for generation random user data
 
@@ -158,7 +163,7 @@ def generate_user_data(
 
 
 def generate_numeric_password(length: int) -> str:
-    """ Generate a numeric password.
+    """Generate a numeric password.
 
     Parameters:
     - length: int, the length of the password to generate.
@@ -167,12 +172,12 @@ def generate_numeric_password(length: int) -> str:
     - A string representing the generated password.
     """
 
-    return ''.join(
-        str(random.randint(0, 9)) for _ in range(length)
-    )
+    return "".join(str(random.randint(0, 9)) for _ in range(length))
 
 
-def append_random_to_local_part_email(domain: str = "", email_local_part: str = "", length_random_part: int = 5):
+def append_random_to_local_part_email(
+    domain: str = "", email_local_part: str = "", length_random_part: int = 5
+):
     """Generates a random email address based on the existing prefix and domain email.
 
     Args:
@@ -180,5 +185,8 @@ def append_random_to_local_part_email(domain: str = "", email_local_part: str = 
         email_local_part: Prefix of the existing email address.
         domain: Domain of the existing email address.
     """
-    random_part = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_random_part))
+    random_part = "".join(
+        random.choice(string.ascii_letters + string.digits)
+        for _ in range(length_random_part)
+    )
     return f"{email_local_part}{random_part}@{domain}"

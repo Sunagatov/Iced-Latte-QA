@@ -4,7 +4,7 @@ from requests import Response
 
 
 def extract_random_product_ids(response: Response, product_quantity: int) -> list:
-    """ Extract random product IDs from the API response to add to favorites.
+    """Extract random product IDs from the API response to add to favorites.
 
     Selects a random sample of products from the response based on the given quantity.
     Returns a list of the ID values for those randomly selected products.
@@ -22,4 +22,4 @@ def extract_random_product_ids(response: Response, product_quantity: int) -> lis
 
     selected_products = random.sample(products, product_quantity)
 
-    return [product['id'] for product in selected_products]
+    return [product["id"] for product in selected_products]

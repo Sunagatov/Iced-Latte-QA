@@ -15,18 +15,19 @@ from framework.tools.generators import generate_user, generate_user_data
 
 @feature("Getting shopping car")
 class TestGetShoppingCart:
-
     @title("Getting shopping cart with Invalid Token")
     @description(
         "GIVEN the user is registered, "
         "WHEN the user sends a request to get  information about shopping cart using an invalid token, "
         "THEN the response code is 401 and the response body contains an appropriate error message."
     )
-    @pytest.mark.skip(reason='Expected status code 401, found: 500')
+    @pytest.mark.skip(reason="Expected status code 401, found: 500")
     def test_get_shopping_cart_info_with_invalid_token(self):
         with step("Getting info about shopping cart"):
             invalid_token = "invalid_token"
-            response_get_cart = CartAPI().get_user_cart(token=invalid_token, expected_status_code=401)
+            response_get_cart = CartAPI().get_user_cart(
+                token=invalid_token, expected_status_code=401
+            )
 
         with step("Checking the Content-Type"):
             assert_content_type(response_get_cart, "text/plain; charset=utf-8")
@@ -39,10 +40,14 @@ class TestGetShoppingCart:
     )
     def test_getting_shopping_cart_with_expired_token(self):
         with step("Getting info about shopping cart"):
-            data = generate_user_data(first_name_length=6, last_name_length=5, password_length=3)
+            data = generate_user_data(
+                first_name_length=6, last_name_length=5, password_length=3
+            )
             email = data["email"]
             expired_token = generate_jwt_token(email=email, expired=True)
-            response_get_cart = CartAPI().get_user_cart(token=expired_token, expected_status_code=401)
+            response_get_cart = CartAPI().get_user_cart(
+                token=expired_token, expected_status_code=401
+            )
             # assert_content_type(response_get_cart, "text/plain; charset=utf-8"), content type absent
 
         with step("Checking the response body"):
@@ -57,7 +62,9 @@ class TestGetShoppingCart:
     )
     def test_getting_shopping_cart_with_empty_token(self):
         with step("Getting info about shopping cart"):
-            response_get_cart = CartAPI().get_user_cart(token=" ", expected_status_code=400)
+            response_get_cart = CartAPI().get_user_cart(
+                token=" ", expected_status_code=400
+            )
             # assert_content_type(response_get_cart, "text/plain; charset=utf-8"), content type absent
 
         with step("Checking the response body"):
@@ -82,7 +89,9 @@ class TestGetShoppingCart:
             )
 
         with step("Getting  info about shopping cart"):
-            response_get_cart = CartAPI().get_user_cart(token=token, expected_status_code=400)
+            response_get_cart = CartAPI().get_user_cart(
+                token=token, expected_status_code=400
+            )
             # assert_content_type(response_get_cart, "text/plain; charset=utf-8"), content type absent
 
         with step("Checking the response body"):
@@ -98,7 +107,9 @@ class TestGetShoppingCart:
     def test_getting_shopping_cart_with_token_not_containing_email(self):
         with step("Getting information about shopping cart "):
             token_without_email = generate_jwt_token()
-            response_get_cart = CartAPI().get_user_cart(token=token_without_email, expected_status_code=400)
+            response_get_cart = CartAPI().get_user_cart(
+                token=token_without_email, expected_status_code=400
+            )
             # assert_content_type(response_get_cart, "text/plain; charset=utf-8"), content type absent
 
         with step("Checking the response body"):
@@ -115,7 +126,9 @@ class TestGetShoppingCart:
         with step("Getting information about shopping cart"):
             email_of_non_existing_user = generate_user()["email"]
             token_of_non_existing_user = generate_jwt_token(email_of_non_existing_user)
-            response_get_cart = CartAPI().get_user_cart(token=token_of_non_existing_user, expected_status_code=404)
+            response_get_cart = CartAPI().get_user_cart(
+                token=token_of_non_existing_user, expected_status_code=404
+            )
 
         with step("Checking response code and Content Type"):
             assert_status_code(response_get_cart, 404)

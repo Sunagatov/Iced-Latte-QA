@@ -31,7 +31,7 @@ class UsersAPI:
         return response
 
     def delete_user(self, token: str, expected_status_code: int = 200) -> Response:
-        """ Deleting user
+        """Deleting user
 
         Args:
             expected_status_code: Expected HTTP code from Response
@@ -59,9 +59,14 @@ class UsersAPI:
 
         return response
 
-    def change_password(self, token: str, new_password: str, old_password: str,
-                        expected_status_code: int = 200) -> Response:
-        """ Change user password
+    def change_password(
+        self,
+        token: str,
+        new_password: str,
+        old_password: str,
+        expected_status_code: int = 200,
+    ) -> Response:
+        """Change user password
 
         Args:
             old_password: old password
@@ -70,10 +75,7 @@ class UsersAPI:
             token: JWT token for authorization of request
 
         """
-        data = {
-            "newPassword": new_password,
-            "oldPassword": old_password
-        }
+        data = {"newPassword": new_password, "oldPassword": old_password}
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         response = requests.patch(headers=headers, url=self.url, data=json.dumps(data))
@@ -82,7 +84,9 @@ class UsersAPI:
 
         return response
 
-    def get_user_avatar(self, token: str = "", expected_status_code: int = 200) -> Response:
+    def get_user_avatar(
+        self, token: str = "", expected_status_code: int = 200
+    ) -> Response:
         """Getting info about user's avatar via API
 
         Args:
@@ -98,26 +102,35 @@ class UsersAPI:
 
         return response
 
-    def post_user_avatar(self, token: str, image_path: str, expected_status_code: int = 200) -> Response:
+    def post_user_avatar(
+        self, token: str, image_path: str, expected_status_code: int = 200
+    ) -> Response:
         """Posts a user's avatar image to the API
 
-         Args:
-            token: JWT token for authorization of the request
-            image_path: Path to the image file to be uploaded
-            expected_status_code: Expected HTTP status code from the response
+        Args:
+           token: JWT token for authorization of the request
+           image_path: Path to the image file to be uploaded
+           expected_status_code: Expected HTTP status code from the response
         """
         headers = self.headers
         path = f"{self.url}/avatar"
         headers["Authorization"] = f"Bearer {token}"
 
         # Open the image file in binary mode
-        with open(image_path, 'rb') as image_file:
+        with open(image_path, "rb") as image_file:
 
-            files = {"file": (os.path.basename(image_path), image_file, 'multipart/form-data')}
+            files = {
+                "file": (
+                    os.path.basename(image_path),
+                    image_file,
+                    "multipart/form-data",
+                )
+            }
             response = requests.post(url=path, headers=headers, files=files)
 
         assert_status_code(response, expected_status_code=expected_status_code)
-        log_request(response)  # Make sure you have a function to log the request and response details
+        log_request(
+            response
+        )  # Make sure you have a function to log the request and response details
 
         return response
-

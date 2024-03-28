@@ -19,7 +19,10 @@ class TestAuthentication:
     )
     def test_authentication_incorrect_password(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Authentication  user with incorrect email"):
             data_post = {
@@ -27,15 +30,22 @@ class TestAuthentication:
                 "password": user["password"] + "invalid",
             }
             response_authentication = AuthenticateAPI().authentication(
-                email=data_post["email"], password=data_post["password"], expected_status_code=401
+                email=data_post["email"],
+                password=data_post["password"],
+                expected_status_code=401,
             )
         with step("Verify error message from response"):
             expected_message = f"Invalid credentials for user's account with email = '{data_post['email']}'"
-            assert_response_message(response=response_authentication, expected_message=expected_message)
+            assert_response_message(
+                response=response_authentication, expected_message=expected_message
+            )
 
     def test_authentication_incorrect_email(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Authentication  user with incorrect email"):
             data_post = {
@@ -43,15 +53,22 @@ class TestAuthentication:
                 "password": user["password"],
             }
             response_authentication = AuthenticateAPI().authentication(
-                email=data_post["email"], password=data_post["password"], expected_status_code=401
+                email=data_post["email"],
+                password=data_post["password"],
+                expected_status_code=401,
             )
         with step("Verify error message from response"):
             expected_message = f"Invalid credentials for user's account with email = '{data_post['email']}'"
-            assert_response_message(response=response_authentication, expected_message=expected_message)
+            assert_response_message(
+                response=response_authentication, expected_message=expected_message
+            )
 
     def test_authentication_incorrect_password_email(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Authentication  user with incorrect email"):
             data_post = {
@@ -59,8 +76,12 @@ class TestAuthentication:
                 "password": user["password"] + "invalid",
             }
             response_authentication = AuthenticateAPI().authentication(
-                email=data_post["email"], password=data_post["password"], expected_status_code=401
+                email=data_post["email"],
+                password=data_post["password"],
+                expected_status_code=401,
             )
         with step("Verify error message from response"):
             expected_message = f"Invalid credentials for user's account with email = '{data_post['email']}'"
-            assert_response_message(response=response_authentication, expected_message=expected_message)
+            assert_response_message(
+                response=response_authentication, expected_message=expected_message
+            )

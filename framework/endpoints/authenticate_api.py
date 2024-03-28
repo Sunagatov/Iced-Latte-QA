@@ -15,7 +15,9 @@ class AuthenticateAPI:
         self.url = HOST + "/api/v1/auth"
         self.headers = {"Content-Type": "application/json"}
 
-    def authentication(self, email: str, password: str, expected_status_code: int = 200) -> Response:
+    def authentication(
+        self, email: str, password: str, expected_status_code: int = 200
+    ) -> Response:
         """Endpoint for authentication of user
 
         Args:
@@ -66,16 +68,16 @@ class AuthenticateAPI:
 
         return response
 
-    def confirmation_email(self, code: str, expected_status_code: int = 201) -> Response:
+    def confirmation_email(
+        self, code: str, expected_status_code: int = 201
+    ) -> Response:
         """Endpoint for authentication of user
 
         Args:
             expected_status_code: expected http status code from response
             code: confirmation code from email
         """
-        data = {
-            "token": code
-        }
+        data = {"token": code}
         path = self.url + "/confirm"
         response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
         assert_status_code(response, expected_status_code=expected_status_code)
@@ -107,10 +109,35 @@ class AuthenticateAPI:
             expected_status_code: expected http status code from response
             email: email for reset password
         """
-        data = {
-            "email": email
-        }
+        data = {"email": email}
         path = self.url + "/password/forgot"
+        response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
+        assert_status_code(response, expected_status_code=expected_status_code)
+        log_request(response)
+
+        return response
+
+    def change_password_through_reset(
+        self,
+        email: str,
+        code_for_reset_password: str,
+        new_password: str,
+        expected_status_code: int = 200,
+    ) -> Response:
+        """Endpoint for authentication of user
+
+        Args:
+          code_for_reset_password: code for reset password, which was sent to user's email
+          new_password: new password
+          expected_status_code: expected http status code from response
+          email: email for reset password
+        """
+        data = {
+            "email": email,
+            "code": code_for_reset_password,
+            "password": new_password,
+        }
+        path = self.url + "/password/change"
         response = requests.post(url=path, data=json.dumps(data), headers=self.headers)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)

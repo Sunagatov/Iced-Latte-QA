@@ -4,7 +4,8 @@ from hamcrest import assert_that, is_
 from framework.asserts.common import (
     assert_status_code,
     assert_content_type,
-    assert_response_message, assert_message_in_response,
+    assert_response_message,
+    assert_message_in_response,
 )
 from framework.asserts.user_asserts import assert_update_user_data_matches
 from framework.endpoints.users_api import UsersAPI
@@ -14,8 +15,10 @@ import pytest
 
 @feature("Update user's information")
 class TestUpdateUser:
-    @pytest.mark.skip(reason="Email is not updated after request. link to bug - "
-                             "https://trello.com/c/WB6FZG8a/4-%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-email-%D0%BD%D0%B5-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82")
+    @pytest.mark.skip(
+        reason="Email is not updated after request. link to bug - "
+        "https://trello.com/c/WB6FZG8a/4-%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-email-%D0%BD%D0%B5-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82"
+    )
     @title("Updating User Information")
     @description(
         "GIVEN the user is logged in, "
@@ -75,18 +78,25 @@ class TestUpdateUser:
 
     @pytest.mark.parametrize(
         "first_name, last_name",
-        [("John", "Doe"), ("Anne-Marie", "O'Conner"), ("O'Brien", "Smith-Jones"), ("Brien", "Smith Jones"),
-         ("Smith Jones", "Smith")],
+        [
+            ("John", "Doe"),
+            ("Anne-Marie", "O'Conner"),
+            ("O'Brien", "Smith-Jones"),
+            ("Brien", "Smith Jones"),
+            ("Smith Jones", "Smith"),
+        ],
     )
     def test_update_user_with_valid_names(
-            self, create_authorized_user, first_name, last_name
+        self, create_authorized_user, first_name, last_name
     ):
         token = create_authorized_user["token"]
 
         with step("Generating new user data"):
             # Include the last_name in the user data generation
             user_data_to_update = generate_user(
-                firstName=first_name, lastName=last_name, email=create_authorized_user["user"]["email"]
+                firstName=first_name,
+                lastName=last_name,
+                email=create_authorized_user["user"]["email"],
             )
 
         with step("Updating user info via API"):
@@ -107,7 +117,8 @@ class TestUpdateUser:
             )
 
     @pytest.mark.skip(
-        reason="Fields First Name and Last Name are not updated with valid length. link to bug - https://trello.com/c/0bWwMrXS/9-first-name-and-last-name-do-not-accept-length-55")
+        reason="Fields First Name and Last Name are not updated with valid length. link to bug - https://trello.com/c/0bWwMrXS/9-first-name-and-last-name-do-not-accept-length-55"
+    )
     @pytest.mark.parametrize(
         "first_name_length, last_name_length",
         [
@@ -132,14 +143,12 @@ class TestUpdateUser:
                 127,
             ),
         ],
-
     )
     def test_update_user_first_name_with_valid_length(
-            self,
-            create_authorized_user,
-            first_name_length,
-            last_name_length,
-
+        self,
+        create_authorized_user,
+        first_name_length,
+        last_name_length,
     ):
         token = create_authorized_user["token"]
 
@@ -197,7 +206,7 @@ class TestUpdateUser:
         ],
     )
     def test_update_user_with_invalid_first_name_and_last_name(
-            self, create_authorized_user, first_name, last_name, expected_message
+        self, create_authorized_user, first_name, last_name, expected_message
     ):
         token = create_authorized_user["token"]
 
@@ -260,11 +269,11 @@ class TestUpdateUser:
         ],
     )
     def test_update_user_first_name_length(
-            self,
-            create_authorized_user,
-            first_name_length,
-            last_name_length,
-            expected_message,
+        self,
+        create_authorized_user,
+        first_name_length,
+        last_name_length,
+        expected_message,
     ):
         token = create_authorized_user["token"]
 
@@ -337,4 +346,6 @@ class TestUpdateUser:
 
         with step("Checking the response message"):
             assert_response_message(updating_user_response, "Request body is empty")
-            assert_message_in_response(updating_user_response, "ErrorMessage: must not be null")
+            assert_message_in_response(
+                updating_user_response, "ErrorMessage: must not be null"
+            )

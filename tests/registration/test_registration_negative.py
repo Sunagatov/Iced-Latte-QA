@@ -56,11 +56,17 @@ class TestRegistration:
     )
     def test_of_registration_email_uniqueness(self, postgres, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Generation data for registration with already exist email in DB"):
             data = generate_user_data(
-                first_name_length=5, last_name_length=5, password_length=8, email=user["email"]
+                first_name_length=5,
+                last_name_length=5,
+                password_length=8,
+                email=user["email"],
             )
 
         with step("Registration user with already exist email in DB"):
@@ -75,12 +81,16 @@ class TestRegistration:
             )
 
         with step(
-                "Checking that new user with duplicate email has not been registered "
+            "Checking that new user with duplicate email has not been registered "
         ):
             email_to_check = user["email"]
             result = postgres.select_user_by_email(email=email_to_check)
-            count = result[0]['count']
-            assert_that(count, equal_to(1), f"Expected 1 user with email {email_to_check}, but found {count}.")
+            count = result[0]["count"]
+            assert_that(
+                count,
+                equal_to(1),
+                f"Expected 1 user with email {email_to_check}, but found {count}.",
+            )
 
     fields = [
         # ("email", "Email is the mandatory attribute"), # Bug in the API => wrong error message for missing required field
@@ -110,7 +120,7 @@ class TestRegistration:
             assert_message_in_response(registration_response, expected_message)
 
         with step(
-                f"Checking that new user with missing field {field} has not been registered "
+            f"Checking that new user with missing field {field} has not been registered "
         ):
             user_data = postgres.get_data_by_filter(
                 table="user_details", field="email", value=self.email

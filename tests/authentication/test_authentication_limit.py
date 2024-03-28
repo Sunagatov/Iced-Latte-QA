@@ -18,7 +18,10 @@ class TestAuthentication:
     )
     def test_of_limitation_attempts(self, create_authorized_user):
         with step("Registration of user"):
-            user, token = create_authorized_user["user"], create_authorized_user["token"]
+            user, token = (
+                create_authorized_user["user"],
+                create_authorized_user["token"],
+            )
 
         with step("Authentication  user with incorrect email"):
             data_post = {
@@ -31,7 +34,9 @@ class TestAuthentication:
             for attempt in range(LIMIT_ATTEMPTS):
                 with step(f"Attempt {attempt}"):
                     response = AuthenticateAPI().authentication(
-                        email=email, password=incorrect_password, expected_status_code=401
+                        email=email,
+                        password=incorrect_password,
+                        expected_status_code=401,
                     )
                     response_authentication = response.json()
                     assert_that(
@@ -54,7 +59,7 @@ class TestAuthentication:
                             response_authentication["timestamp"], TIMESTAMP_PATTERN
                         ),
                         reason=f"Timestamp '{response_authentication['timestamp']}' does not match "
-                               f"the expected format YYYY-MM-DD HH:MM:SS",
+                        f"the expected format YYYY-MM-DD HH:MM:SS",
                     )
 
         with step("Authentication attempt over the limit"):
@@ -81,5 +86,5 @@ class TestAuthentication:
                     response_locked_authentication["timestamp"], TIMESTAMP_PATTERN
                 ),
                 reason=f"Timestamp '{response_locked_authentication['timestamp']}' does not match "
-                       f"the expected format YYYY-MM-DD HH:MM:SS",
+                f"the expected format YYYY-MM-DD HH:MM:SS",
             )

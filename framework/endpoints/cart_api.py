@@ -16,7 +16,7 @@ class CartAPI:
         self.headers = {"Content-Type": "application/json"}
 
     def get_user_cart(self, token: str, expected_status_code: int = 200) -> Response:
-        """ Getting info about user's shopping cart
+        """Getting info about user's shopping cart
 
         Args:
             expected_status_code: expected http status code from response
@@ -31,8 +31,13 @@ class CartAPI:
 
         return response
 
-    def update_quantity_product(self, token: str, item_id: str, item_quantity: int,
-                                expected_status_code: int = 200) -> Response:
+    def update_quantity_product(
+        self,
+        token: str,
+        item_id: str,
+        item_quantity: int,
+        expected_status_code: int = 200,
+    ) -> Response:
         """Updating product's quantity
 
         Args:
@@ -41,9 +46,7 @@ class CartAPI:
             expected_status_code: expected http status code from response
             token: JWT token for authorization of request
         """
-        body = {"shoppingCartItemId": item_id,
-                "productQuantityChange": item_quantity
-                }
+        body = {"shoppingCartItemId": item_id, "productQuantityChange": item_quantity}
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = self.url + "/items"
@@ -52,7 +55,9 @@ class CartAPI:
         log_request(response)
         return response
 
-    def add_item_to_cart(self, token: str, items: list[object], expected_status_code: int = 200) -> Response:
+    def add_item_to_cart(
+        self, token: str, items: list[object], expected_status_code: int = 200
+    ) -> Response:
         """Adding multiple products to cart and verifying if they are in the response
 
         Args:
@@ -75,7 +80,9 @@ class CartAPI:
         log_request(response)
         return response
 
-    def delete_item_from_cart(self, token: str, cart_item_id: list, expected_status_code: int = 200) -> Response:
+    def delete_item_from_cart(
+        self, token: str, cart_item_id: list, expected_status_code: int = 200
+    ) -> Response:
         """Deleting item from shopping cart
 
         Args:
@@ -84,10 +91,7 @@ class CartAPI:
             token: JWT token for authorization of request
         """
 
-        body = {
-            "shoppingCartItemIds": cart_item_id
-
-        }
+        body = {"shoppingCartItemIds": cart_item_id}
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = self.url + "/items"

@@ -27,7 +27,7 @@ class PostgresDB:
         self.db.close()
 
     def get_data_by_filter(
-            self, table: str, field: str, value: str
+        self, table: str, field: str, value: str
     ) -> Optional[List[dict]]:
         """Getting data from table by filter field and its value
 
@@ -64,7 +64,7 @@ class PostgresDB:
         return response
 
     def get_product_by_filter(
-            self, field: str, ascend: bool = False, size: int = -1, page: int = -1
+        self, field: str, ascend: bool = False, size: int = -1, page: int = -1
     ) -> Optional[List[dict]]:
         """Getting sorted products by size and page by page
 
@@ -168,9 +168,8 @@ class PostgresDB:
     def select_user_by_email(self, email) -> Optional[List[dict]]:
         """Search user by email in BD
 
-         Args:
-             email: user's email
+        Args:
+            email: user's email
         """
         select_query = f"SELECT COUNT(*) FROM user_details WHERE email = '{email}'"
         return self.db.fetch_all(select_query)
-

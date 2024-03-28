@@ -5,8 +5,10 @@ from assertpy import assert_that as assertpy_assert_that
 from requests import Response
 
 
-def assert_added_product_in_favorites(response: Response, product_add_to_favorite: list[str]):
-    """ Asserts that the given products were added to user favorites.
+def assert_added_product_in_favorites(
+    response: Response, product_add_to_favorite: list[str]
+):
+    """Asserts that the given products were added to user favorites.
 
     Args:
        response: The response from API request.
@@ -25,12 +27,16 @@ def assert_added_product_in_favorites(response: Response, product_add_to_favorit
     if not data:
         raise ValueError("Response does not contain 'products' or it's empty")
 
-    list_id_from_data = [d['id'] for d in data if 'id' in d]
+    list_id_from_data = [d["id"] for d in data if "id" in d]
     for item in product_add_to_favorite:
-        ham_assert_that(list_id_from_data, has_item(item), f"ID '{item}' not found in the response")
+        ham_assert_that(
+            list_id_from_data, has_item(item), f"ID '{item}' not found in the response"
+        )
 
 
-def assert_id_key_and_its_value_is_not_empty_in_response(response: Response) -> Union[Dict[str, str], None]:
+def assert_id_key_and_its_value_is_not_empty_in_response(
+    response: Response,
+) -> Union[Dict[str, str], None]:
     """Asserts product IDs exist and are not empty in response.
 
     Checks that the JSON response contains an "id" key for each product
@@ -57,5 +63,9 @@ def assert_id_key_and_its_value_is_not_empty_in_response(response: Response) -> 
         raise ValueError("Response does not contain 'products' or it's empty")
 
     for product in favorite_product_info:
-        assertpy_assert_that(product).contains_key("id").described_as("Response does not contain an 'id' key")
-        assertpy_assert_that(product["id"]).is_not_empty().described_as("Product 'id' has no value")
+        assertpy_assert_that(product).contains_key("id").described_as(
+            "Response does not contain an 'id' key"
+        )
+        assertpy_assert_that(product["id"]).is_not_empty().described_as(
+            "Product 'id' has no value"
+        )

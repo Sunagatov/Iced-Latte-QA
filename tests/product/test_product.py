@@ -34,7 +34,7 @@ class TestProduct:
             non_exist_id = str(uuid.uuid4())
 
         with step(
-                f'Getting product info by non-existent product ID via API "{non_exist_id}"'
+            f'Getting product info by non-existent product ID via API "{non_exist_id}"'
         ):
             data = ProductAPI().get_by_id(_id=non_exist_id)
 

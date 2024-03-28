@@ -15,18 +15,17 @@ class FavoriteAPI:
         self.url = HOST + "/api/v1/favorites"
         self.headers = {"Content-Type": "application/json"}
 
-    def add_favorites(self, token: str, favorite_product: list[str], expected_status_code: int = 200) -> Response:
-        """ Add product to favorites
+    def add_favorites(
+        self, token: str, favorite_product: list[str], expected_status_code: int = 200
+    ) -> Response:
+        """Add product to favorites
 
         Args:
             favorite_product: list product/products to add to favorites
             expected_status_code: expected http status code from response
             token: JWT token for authorization of request
         """
-        data = {
-            "productIds":
-                favorite_product
-        }
+        data = {"productIds": favorite_product}
 
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
@@ -38,7 +37,7 @@ class FavoriteAPI:
         return response
 
     def get_favorites(self, token: str, expected_status_code: int = 200) -> Response:
-        """ Getting info about user's shopping cart
+        """Getting info about user's shopping cart
 
         Args:
             expected_status_code: expected http status code from response
@@ -54,8 +53,10 @@ class FavoriteAPI:
 
         return response
 
-    def delete_favorites(self, token: str, id_product: str, expected_status_code: int = 200) -> Response:
-        """ Add product to favorites
+    def delete_favorites(
+        self, token: str, id_product: str, expected_status_code: int = 200
+    ) -> Response:
+        """Add product to favorites
 
         Args:
             id_product: product to delete from favorite list
@@ -66,7 +67,7 @@ class FavoriteAPI:
         headers = self.headers
         headers["Authorization"] = f"Bearer {token}"
         path = f"{self.url}/{id_product}"
-        response = requests.delete(url=path,  headers=headers)
+        response = requests.delete(url=path, headers=headers)
         assert_status_code(response, expected_status_code=expected_status_code)
         log_request(response)
 

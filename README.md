@@ -19,7 +19,7 @@ JWT_SECRET = '<default secret for JWT>'
 ./start_be.sh [<commit_hash>]
 ```
 
-> Notes: 
+> Notes:
 > * optional `commit_hash` is a hash of a commit from `development` branch, default is the latest
 > * it might be necessary to make script executable before the first run `chmod +x ./start_be.sh`
 > * the script will pull the specified version of BE image and start BE, Postgres and Minio
@@ -46,4 +46,8 @@ allure serve allure_report
 For running pre-commit hooks should be installed pre-commit -> https://pre-commit.com/#install
 ```bash
 pre-commit install
+```
+To run pre-commit hooks, execute next command before commit:
+```bash
+pre-commit run --all-files
 ```
