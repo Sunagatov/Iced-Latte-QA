@@ -8,7 +8,7 @@ allure_report/
 
 # Config
 # !!!
-configs.py
+# configs.py
 
 __pycache__/
 tests/__pycache__/
