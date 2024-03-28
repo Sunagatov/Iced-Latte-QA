@@ -1,0 +1,6 @@
+link = "https://iced-latte.uk/"
+first_name = "Test"
+last_name = "Testtest"
+email = "ilsinyakovmo4@gmail.com"
+password = "80000005a"
+new_first_name = "Ilyanew"
