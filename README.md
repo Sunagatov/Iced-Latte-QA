@@ -56,3 +56,30 @@ For running pre-commit hooks should be installed pre-commit -> https://pre-commi
 ```bash
 pre-commit install
 ```
+
+## Database Navigator
+
+> For Ultimate Edition consider using [Database Tools and SQL plugin](https://www.jetbrains.com/help/idea/relational-databases.html)
+
+Install Database Navigator Plugin:
+
+1. double click **Shift**
+2. type **Plugins**
+3. type **Database Navigator** > click **Install**
+4. navigate to **View** > **Tool Windows** > **DB Browser**
+5. click New Connection 
+6. select PostgesSQL
+
+Go to **View** > **Tool Windows** > **DB Browser**.
+
+Add new PostgresSQL connection:
+ * Host `127.0.0.1`
+ * Database `testdb`
+ * User `postgres`
+ * Password `postgres`
+
+![](db_navigator_setup.png)
+
+Enjoy!
+
+![](db_navigator.png)
