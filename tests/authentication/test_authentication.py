@@ -53,3 +53,4 @@ class TestAuthentication:
             assert_that(
                 response.status_code, is_(200), reason="Expected status code 200"
             )
+        print(response.text)
